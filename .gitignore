@@ -18,3 +18,8 @@ chroma
 container.db
 .next-build
 .cursor
+
+# --- 本地个人文件 & 临时文件 ---
+这是一个伟大的开始.txt
+配置完成说明.md
+servers/fastapi/presenton_backend.egg-info/

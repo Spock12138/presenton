@@ -34,7 +34,22 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 # Container DB (Lives inside the container)
-container_db_url = "sqlite+aiosqlite:////app/container.db"
+# container_db_url = "sqlite+aiosqlite:////app/container.db"
+import os
+
+# 1. 读取你在 .env 设置的 APP_DATA_DIRECTORY，如果没有则默认 ./app_data
+app_data_dir = os.getenv("APP_DATA_DIRECTORY", "./app_data")
+
+# 2. 拼接数据库文件的完整路径 (例如 D:/project/.../app_data/presenton.db)
+# 注意：这里我们给数据库文件起名叫 presenton.db
+db_file_path = os.path.join(app_data_dir, "presenton.db")
+
+# 3. 构造 Windows 兼容的 URL (注意：Windows 绝对路径前面是 3 个斜杠 ///)
+# 最终结果类似：sqlite+aiosqlite:///D:/project/.../presenton.db
+container_db_url = f"sqlite+aiosqlite:///{db_file_path}"
+
+# 打印一下路径，方便调试（可选）
+print(f"✅ 正在连接数据库: {container_db_url}")
 container_db_engine: AsyncEngine = create_async_engine(
     container_db_url, connect_args={"check_same_thread": False}
 )

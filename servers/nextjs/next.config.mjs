@@ -4,13 +4,41 @@ const nextConfig = {
   distDir: ".next-build",
   
 
-  // Rewrites for development - proxy font requests to FastAPI backend
+  // // Rewrites for development - proxy font requests to FastAPI backend
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/app_data/fonts/:path*',
+  //       destination: 'http://localhost:8000/app_data/fonts/:path*',
+  //     },
+  //   ];
+  // },
+
+  // Rewrites for development
   async rewrites() {
+    // 优先读取环境变量，如果没有读到则默认使用 127.0.0.1:8000
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
     return [
+      // 1. 保留原有的字体转发规则 (不要删)
       {
         source: '/app_data/fonts/:path*',
-        destination: 'http://localhost:8000/app_data/fonts/:path*',
+        destination: `${apiUrl}/app_data/fonts/:path*`,
       },
+      // 2. [新增] 关键！将 /api 开头的请求转发给后端
+      {
+        source: '/api/:path*',
+        destination: `${apiUrl}/api/:path*`,
+      },
+      // 3. [新增] 如果有 Swagger 文档或者 openapi.json 的需求，也可以加上
+      {
+        source: '/openapi.json',
+        destination: `${apiUrl}/openapi.json`,
+      },
+      {
+        source: '/docs',
+        destination: `${apiUrl}/docs`,
+      }
     ];
   },
 

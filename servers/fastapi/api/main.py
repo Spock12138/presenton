@@ -1,3 +1,25 @@
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# 加载项目根目录的 .env 文件
+# 使用绝对路径确保正确加载
+current_file = Path(__file__).resolve()
+fastapi_dir = current_file.parent.parent  # servers/fastapi
+servers_dir = fastapi_dir.parent  # servers
+project_root = servers_dir.parent  # 项目根目录
+env_path = project_root / ".env"
+
+print(f"正在加载 .env 文件: {env_path}")
+print(f"文件存在: {env_path.exists()}")
+
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
+    print(f"✅ .env 文件加载成功")
+    print(f"APP_DATA_DIRECTORY: {os.getenv('APP_DATA_DIRECTORY')}")
+else:
+    print(f"⚠️ .env 文件不存在: {env_path}")
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.lifespan import app_lifespan
