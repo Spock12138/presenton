@@ -205,6 +205,15 @@ class LLMClient:
             extra_body=extra_body,
         )
 
+        # 2. === 在这里插入调试代码 (开始) ===
+        try:
+            # 获取内容
+            debug_content = response.choices[0].message.content
+            print(f"\n🛑 [DEBUG] Qwen (Non-Stream) 返回内容:\n{debug_content}\n🛑 [DEBUG End]\n")
+        except Exception as e:
+            print(f"🛑 [DEBUG] 打印出错: {e}")
+        # === 在这里插入调试代码 (结束) ===
+
         if len(response.choices) == 0:
             return None
 
@@ -392,6 +401,8 @@ class LLMClient:
         max_tokens: Optional[int] = None,
         depth: int = 0,
     ):
+        print(f"\n🛑 [DEBUG] Custom LLM (_generate_custom) 被调用，准备使用 OpenAI 兼容接口\n")
+        
         extra_body = {"enable_thinking": False} if self.disable_thinking() else None
         return await self._generate_openai(
             model=model,
@@ -460,6 +471,7 @@ class LLMClient:
         extra_body: Optional[dict] = None,
         depth: int = 0,
     ) -> dict | None:
+        print(f"[DEBUG _generate_openai_structured] Calling API with model: {model}, strict: {strict}")
         client: AsyncOpenAI = self._client
         response_schema = response_format
         all_tools = [*tools] if tools else None
@@ -488,6 +500,7 @@ class LLMClient:
                 )
             )
 
+        print("[DEBUG _generate_openai_structured] Calling client.chat.completions.create()...")
         response = await client.chat.completions.create(
             model=model,
             messages=[message.model_dump() for message in messages],
@@ -509,6 +522,7 @@ class LLMClient:
             tools=all_tools,
             extra_body=extra_body,
         )
+        print("[DEBUG _generate_openai_structured] API call returned successfully")
 
         if len(response.choices) == 0:
             return None
@@ -782,6 +796,7 @@ class LLMClient:
         tools: Optional[List[type[LLMTool] | LLMDynamicTool]] = None,
         max_tokens: Optional[int] = None,
     ) -> dict:
+        print(f"[DEBUG LLMClient.generate_structured] Provider: {self.llm_provider}, Model: {model}")
         parsed_tools = self.tool_calls_handler.parse_tools(tools)
 
         content = None
@@ -846,6 +861,9 @@ class LLMClient:
     ) -> AsyncGenerator[str, None]:
         client: AsyncOpenAI = self._client
 
+        # ... (中间变量初始化保持不变)
+        print("\n🛑 [DEBUG] 开始接收流式数据: ", end="", flush=True)  # <--- 在循环外加这一句，标记开始
+
         tool_calls: List[LLMToolCall] = []
         current_index = 0
         current_id = None
@@ -864,6 +882,14 @@ class LLMClient:
                 continue
 
             content_chunk = event.choices[0].delta.content
+
+            # 👇👇👇 在这里插入调试代码 (开始) 👇👇👇
+            if content_chunk:
+                # end="" 表示不换行，直接连着打；flush=True 表示立即输出不缓存
+                # 这样你在终端里就能看到像打字机一样的效果
+                print(content_chunk, end="", flush=True) 
+            # 👆👆👆 在这里插入调试代码 (结束) 👆👆👆
+
             if content_chunk:
                 yield content_chunk
 
@@ -1184,6 +1210,8 @@ class LLMClient:
         current_arguments = None
 
         has_response_schema_tool_call = False
+        print("\n🛑 [DEBUG Structured] 开始接收结构化流式数据: ", end="", flush=True)  # 添加调试标记
+        
         async for event in await client.chat.completions.create(
             model=model,
             messages=[message.model_dump() for message in messages],
@@ -1212,6 +1240,7 @@ class LLMClient:
 
             content_chunk = event.choices[0].delta.content
             if content_chunk and not use_tool_calls_for_structured_output:
+                print(content_chunk, end="", flush=True)  # 添加调试输出
                 yield content_chunk
 
             tool_call_chunk = event.choices[0].delta.tool_calls
@@ -1246,6 +1275,7 @@ class LLMClient:
 
                 if current_name == "ResponseSchema":
                     if tool_arguments:
+                        print(tool_arguments, end="", flush=True)  # 添加调试输出（工具调用方式的结构化数据）
                         yield tool_arguments
                     has_response_schema_tool_call = True
 

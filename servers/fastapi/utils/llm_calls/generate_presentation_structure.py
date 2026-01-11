@@ -102,13 +102,16 @@ async def generate_presentation_structure(
     using_slides_markdown: bool = False,
 ) -> PresentationStructureModel:
 
+    print(f"[DEBUG generate_presentation_structure] Starting with {len(presentation_outline.slides)} slides")
     client = LLMClient()
     model = get_model()
+    print(f"[DEBUG generate_presentation_structure] Using model: {model}")
     response_model = get_presentation_structure_model_with_n_slides(
         len(presentation_outline.slides)
     )
 
     try:
+        print("[DEBUG generate_presentation_structure] Calling LLM client.generate_structured()...")
         response = await client.generate_structured(
             model=model,
             messages=(
@@ -129,6 +132,8 @@ async def generate_presentation_structure(
             response_format=response_model.model_json_schema(),
             strict=True,
         )
+        print("[DEBUG generate_presentation_structure] LLM call succeeded!")
         return PresentationStructureModel(**response)
     except Exception as e:
+        print(f"[DEBUG generate_presentation_structure] ERROR: {str(e)}")
         raise handle_llm_client_exceptions(e)

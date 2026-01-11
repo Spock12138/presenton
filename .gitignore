@@ -8,7 +8,7 @@ node_modules
 out
 user_data
 app_data
-tmp
+tmp/
 debug
 .fastembed_cache
 

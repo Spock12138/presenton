@@ -177,6 +177,10 @@ async def prepare_presentation(
     title: Annotated[Optional[str], Body()] = None,
     sql_session: AsyncSession = Depends(get_async_session),
 ):
+    print(f"[DEBUG] /prepare endpoint called for presentation_id: {presentation_id}")
+    print(f"[DEBUG] Number of outlines: {len(outlines)}")
+    print(f"[DEBUG] Layout name: {layout.name}, ordered: {layout.ordered}")
+    
     if not outlines:
         raise HTTPException(status_code=400, detail="Outlines are required")
 
@@ -190,8 +194,10 @@ async def prepare_presentation(
     total_outlines = len(outlines)
 
     if layout.ordered:
+        print("[DEBUG] Layout is ordered, using direct structure")
         presentation_structure = layout.to_presentation_structure()
     else:
+        print("[DEBUG] Layout is NOT ordered, calling LLM to generate structure...")
         presentation_structure: PresentationStructureModel = (
             await generate_presentation_structure(
                 presentation_outline=presentation_outline_model,
@@ -199,6 +205,7 @@ async def prepare_presentation(
                 instructions=presentation.instructions,
             )
         )
+        print("[DEBUG] LLM structure generation completed")
 
     presentation_structure.slides = presentation_structure.slides[: len(outlines)]
     for index in range(total_outlines):
