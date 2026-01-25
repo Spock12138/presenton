@@ -23,3 +23,4 @@ container.db
 这是一个伟大的开始.txt
 配置完成说明.md
 servers/fastapi/presenton_backend.egg-info/
+*.bak

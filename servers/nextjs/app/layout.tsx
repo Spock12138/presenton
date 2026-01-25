@@ -32,9 +32,9 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://presenton.ai"),
-  title: "Presenton - Open Source AI presentation generator",
+  title: "JiBao Tech - AI Presentation Generator",
   description:
-    "Open-source AI presentation generator with custom layouts, multi-model support (OpenAI, Gemini, Ollama), and PDF/PPTX export. A free Gamma alternative.",
+    "吉豹科技 AI 演示文稿生成器 - Open-source AI presentation generator with custom layouts",
   keywords: [
     "AI presentation generator",
     "data storytelling",

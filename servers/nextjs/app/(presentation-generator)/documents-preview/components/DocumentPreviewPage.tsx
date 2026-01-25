@@ -128,7 +128,7 @@ const DocumentsPreviewPage: React.FC = () => {
         });
       } catch (error) {
         console.error("Error reading files:", error);
-        toast.error("Failed to read document content");
+        toast.error("读取文档内容失败");
       }
       setDownloadingDocuments([]);
     }
@@ -137,7 +137,7 @@ const DocumentsPreviewPage: React.FC = () => {
   const handleCreatePresentation = async () => {
     try {
       setShowLoading({
-        message: "Generating presentation outline...",
+        message: "正在生成演示文稿大纲...",
         show: true,
         duration: 40,
         progress: true,
@@ -167,11 +167,11 @@ const DocumentsPreviewPage: React.FC = () => {
       router.replace("/outline");
     } catch (error: any) {
       console.error("Error in radar presentation creation:", error);
-      toast.error("Error", {
-        description: error.message || "Error in radar presentation creation.",
+      toast.error("出错了", {
+        description: error.message || "创建演示文稿时出错",
       });
       setShowLoading({
-        message: "Error in radar presentation creation.",
+        message: "创建演示文稿时出错",
         show: true,
         duration: 10,
         progress: false,

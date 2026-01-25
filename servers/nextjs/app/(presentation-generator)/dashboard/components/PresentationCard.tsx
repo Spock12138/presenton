@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import { Card } from "@/components/ui/card";
 import { DashboardApi } from "@/app/(presentation-generator)/services/api/dashboard";
-import { DotsVerticalIcon, TrashIcon } from "@radix-ui/react-icons";
+import { MoreHorizontal, Trash2, Download, Edit3 } from "lucide-react";
 import {
   Popover,
   PopoverTrigger,
@@ -11,6 +11,20 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTemplateLayouts } from "@/app/(presentation-generator)/hooks/useTemplateLayouts";
+
+// Helper function to format relative time
+const formatRelativeTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 60) return "刚刚";
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} 分钟前`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} 小时前`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} 天前`;
+  
+  return date.toLocaleDateString("zh-CN", { month: "short", day: "numeric" });
+};
 
 export const PresentationCard = ({
   id,
@@ -28,8 +42,6 @@ export const PresentationCard = ({
   const router = useRouter();
   const { renderSlideContent } = useTemplateLayouts();
 
-
-
   const handlePreview = (e: React.MouseEvent) => {
     e.preventDefault();
     router.push(`/presentation?id=${id}`);
@@ -39,80 +51,76 @@ export const PresentationCard = ({
     e.preventDefault();
     e.stopPropagation();
 
-
     const response = await DashboardApi.deletePresentation(id);
 
     if (response) {
-      toast.success("Presentation deleted", {
-        description: "The presentation has been deleted successfully",
+      toast.success("演示文稿已删除", {
+        description: "该演示文稿已成功删除",
       });
       if (onDeleted) {
         onDeleted(id);
       }
     } else {
-      toast.error("Error deleting presentation");
+      toast.error("删除演示文稿时出错");
     }
   };
+
   return (
     <Card
       onClick={handlePreview}
-
-      className="bg-white rounded-[8px] slide-theme cursor-pointer overflow-hidden p-4"
-
+      className="group bg-white rounded-xl cursor-pointer overflow-hidden border border-slate-100 hover:border-slate-200 shadow-sm hover:shadow-md hover:shadow-slate-200/50 transition-all duration-300"
     >
-      <div className="space-y-4">
-        {/* Date */}
-        <div className="flex items-center justify-between">
-          <p className="text-[#667085] text-sm font-roboto pt-2">
-            {new Date(created_at).toLocaleDateString()}
-          </p>
+      {/* Thumbnail */}
+      <div className="relative aspect-video bg-slate-50 overflow-hidden">
+        <div className="absolute bg-transparent z-40 top-0 left-0 w-full h-full" />
+        <div className="transform scale-[0.2] flex justify-center items-center origin-top-left w-[500%] h-[500%]">
+          {renderSlideContent(slide, false)}
+        </div>
+        
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </div>
+
+      {/* Content */}
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-medium text-slate-800 truncate group-hover:text-slate-900 transition-colors">
+              {title || "无标题"}
+            </h3>
+            <p className="text-sm text-slate-400 mt-1">
+              {formatRelativeTime(created_at)}
+            </p>
+          </div>
+          
+          {/* Actions Menu */}
           <Popover>
-            <PopoverTrigger className="w-6 h-6 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-700" onClick={(e) => e.stopPropagation()}>
-
-
-              <DotsVerticalIcon className="w-4 h-4 text-gray-500" />
-
+            <PopoverTrigger 
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-all duration-200" 
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoreHorizontal className="w-4 h-4" />
             </PopoverTrigger>
-            <PopoverContent align="end" className="bg-white w-[200px]">
+            <PopoverContent align="end" className="bg-white w-[160px] p-1 shadow-lg border border-slate-100 rounded-lg">
               <button
-                className="flex items-center justify-between w-full px-2 py-1 hover:bg-gray-100"
+                className="flex items-center gap-3 w-full px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/presentation?id=${id}`);
+                }}
+              >
+                <Edit3 className="w-4 h-4" />
+                <span>编辑</span>
+              </button>
+              <button
+                className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                 onClick={handleDelete}
               >
-                <p>Delete</p>
-                <TrashIcon className="w-4 h-4 text-red-500" />
+                <Trash2 className="w-4 h-4" />
+                <span>删除</span>
               </button>
             </PopoverContent>
           </Popover>
-        </div>
-
-        <div className=" slide-box relative overflow-hidden border aspect-video"
-          style={{
-
-          }}
-        >
-          <div className="absolute bg-transparent z-40 top-0 left-0 w-full h-full" />
-          <div className="transform scale-[0.2] flex justify-center items-center origin-top-left  w-[500%] h-[500%]">
-            {renderSlideContent(slide, false)}
-          </div>
-        </div>
-
-        {/* Icon and Title */}
-        <div className="flex items-center gap-2 pb-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full max-w-[20px] max-h-[20px]"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M15.75 0.75V6C15.75 6.42 16.08 6.75 16.5 6.75H21.75M9.75 17.25H7.5C7.08 17.25 6.75 16.92 6.75 16.5V12C6.75 11.58 7.08 11.25 7.5 11.25H13.5C13.92 11.25 14.25 11.58 14.25 12V14.25M21.75 6.3V22.5C21.75 22.92 21.42 23.25 21 23.25H3C2.58 23.25 2.25 22.92 2.25 22.5V1.5C2.25 1.08 2.58 0.75 3 0.75H16.275C16.47 0.75 16.665 0.825 16.815 0.975L21.54 5.775C21.675 5.925 21.75 6.105 21.75 6.3ZM10.5 14.25H16.5C16.92 14.25 17.25 14.58 17.25 15V19.5C17.25 19.92 16.92 20.25 16.5 20.25H10.5C10.08 20.25 9.75 19.92 9.75 19.5V15C9.75 14.58 10.08 14.25 10.5 14.25Z"
-              stroke="black"
-              strokeWidth="1.5"
-            />
-          </svg>
-          <p className="text-[#667085] text-sm ml-1 line-clamp-2 font-roboto">
-            {title}
-          </p>
         </div>
       </div>
     </Card>

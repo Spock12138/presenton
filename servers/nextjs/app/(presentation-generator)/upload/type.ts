@@ -16,6 +16,7 @@ export enum ThemeType {
 export enum LanguageType {
   // Major World Languages
   //   Auto = "Auto",
+  ChineseSimplified = "中文",
   English = "English",
   Spanish = "Spanish (Español)",
   French = "French (Français)",
@@ -24,7 +25,6 @@ export enum LanguageType {
   Italian = "Italian (Italiano)",
   Dutch = "Dutch (Nederlands)",
   Russian = "Russian (Русский)",
-  ChineseSimplified = "Chinese (Simplified - 中文, 汉语)",
   ChineseTraditional = "Chinese (Traditional - 中文, 漢語)",
   Japanese = "Japanese (日本語)",
   Korean = "Korean (한국어)",

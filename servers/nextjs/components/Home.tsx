@@ -42,7 +42,7 @@ export default function Home() {
   const [buttonState, setButtonState] = useState<ButtonState>({
     isLoading: false,
     isDisabled: false,
-    text: "Save Configuration",
+    text: "保存配置",
     showProgress: false
   });
 
@@ -61,7 +61,7 @@ export default function Home() {
         ...prev,
         isLoading: true,
         isDisabled: true,
-        text: "Saving Configuration..."
+        text: "正在保存配置..."
       }));
       // API: save config
       trackEvent(MixpanelEvent.Home_SaveConfiguration_API_Call);
@@ -79,23 +79,23 @@ export default function Home() {
           await handleModelDownload();
         }
       }
-      toast.info("Configuration saved successfully");
+      toast.info("配置保存成功");
       setButtonState(prev => ({
         ...prev,
         isLoading: false,
         isDisabled: false,
-        text: "Save Configuration"
+        text: "保存配置"
       }));
       // Track navigation from -> to
       trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/upload" });
       router.push("/upload");
     } catch (error) {
-      toast.info(error instanceof Error ? error.message : "Failed to save configuration");
+      toast.info(error instanceof Error ? error.message : "保存配置失败");
       setButtonState(prev => ({
         ...prev,
         isLoading: false,
         isDisabled: false,
-        text: "Save Configuration"
+        text: "保存配置"
       }));
     }
   };
@@ -117,7 +117,7 @@ export default function Home() {
       setButtonState({
         isLoading: true,
         isDisabled: true,
-        text: `Downloading Model (${percentage}%)`,
+        text: `正在下载模型 (${percentage}%)`,
         showProgress: true,
         progressPercentage: percentage,
         status: downloadingModel.status
@@ -128,7 +128,7 @@ export default function Home() {
       setTimeout(() => {
         setShowDownloadModal(false);
         setDownloadingModel(null);
-        toast.info("Model downloaded successfully!");
+        toast.info("模型下载成功！");
       }, 2000);
     }
   }, [downloadingModel]);
@@ -149,10 +149,10 @@ export default function Home() {
         {/* Branding Header */}
         <div className="text-center mb-2 mt-4 flex-shrink-0">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <img src="/Logo.png" alt="Presenton Logo" className="h-12" />
+            <img src="/jibaoLogo.png" alt="JiBao Tech Logo" className="h-12 object-contain" />
           </div>
           <p className="text-gray-600 text-sm">
-            Open-source AI presentation generator
+            开源 AI 演示文稿生成器
           </p>
         </div>
 

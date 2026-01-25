@@ -144,10 +144,10 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({
       <div className="space-y-6">
         <div className="text-center py-8">
           <h5 className="text-lg font-medium mb-2 text-gray-700">
-            No Templates Available
+            暂无可用模板
           </h5>
           <p className="text-gray-600 text-sm">
-            No presentation templates could be loaded. Please try refreshing the page.
+            无法加载演示文稿模板，请刷新页面重试。
           </p>
         </div>
       </div>
@@ -166,7 +166,7 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({
     <div className="space-y-8 mb-4">
       {/* In Built Templates */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">In Built Templates</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">内置模板</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {inBuiltTemplates.map((template) => (
             <TemplateLayouts
@@ -182,11 +182,11 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({
       {/* Custom AI Templates */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold text-gray-900">Custom AI Templates</h3>
+          <h3 className="text-lg font-semibold text-gray-900">自定义 AI 模板</h3>
         </div>
         {customTemplates.length === 0 ? (
           <div className="text-sm text-gray-600 py-2">
-            No custom templates. Create one from "All Templates" menu.
+            暂无自定义模板，可通过“模板库”菜单创建。
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -60,12 +60,12 @@ const SlideContent = ({ slide, index, presentationId }: SlideContentProps) => {
 
       if (response) {
         dispatch(updateSlide({ index: slide.index, slide: response }));
-        toast.success("Slide updated successfully");
+        toast.success("幻灯片更新成功");
       }
     } catch (error: any) {
       console.error("Error in slide editing:", error);
-      toast.error("Error in slide editing.", {
-        description: error.message || "Error in slide editing.",
+      toast.error("编辑幻灯片时出错", {
+        description: error.message || "编辑幻灯片时出错",
       });
     } finally {
       setIsUpdating(false);
@@ -83,8 +83,8 @@ const SlideContent = ({ slide, index, presentationId }: SlideContentProps) => {
 
     } catch (error: any) {
       console.error("Error deleting slide:", error);
-      toast.error("Error deleting slide.", {
-        description: error.message || "Error deleting slide.",
+      toast.error("删除幻灯片时出错", {
+        description: error.message || "删除幻灯片时出错",
       });
     }
   };

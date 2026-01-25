@@ -570,9 +570,12 @@ async def _convert_pptx_to_pdf(pptx_path: str, temp_dir: str) -> str:
         pdf_path = os.path.join(screenshots_dir, pdf_filename)
 
         try:
+            libreoffice_cmd = os.getenv("LIBREOFFICE_PATH", "libreoffice")
+            print(f"Using LibreOffice command: {libreoffice_cmd}")
+            
             result = subprocess.run(
                 [
-                    "libreoffice",
+                    libreoffice_cmd,
                     "--headless",
                     "--convert-to",
                     "pdf",

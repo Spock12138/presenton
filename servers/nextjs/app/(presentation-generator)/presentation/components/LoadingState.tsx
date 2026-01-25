@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 const LoadingState = () => {
     const [currentTipIndex, setCurrentTipIndex] = useState(0);
     const tips = [
-        "We're crafting your presentation with AI magic ✨",
-        "Analyzing your content for perfect slides 📊",
-        "Organizing information for maximum impact 🎯",
-        "Adding visual elements to engage your audience 🎨",
-        "Almost there! Putting final touches ⚡️"
+        "正在用 AI 魔法为你制作演示文稿 ✨",
+        "正在分析内容，打造完美幻灯片 📊",
+        "正在组织信息，最大化展示效果 🎯",
+        "正在添加视觉元素，吸引观众 🎨",
+        "即将完成，正在进行最后收尾 ⚡️"
     ];
 
     useEffect(() => {
@@ -25,7 +25,7 @@ const LoadingState = () => {
                 <div className="bg-white rounded-xl p-6 w-full">
                     <div className="flex items-center justify-center space-x-4 ">
 
-                        <h2 className="text-2xl font-semibold text-gray-800">Creating Your Presentation</h2>
+                        <h2 className="text-2xl font-semibold text-gray-800">正在创建你的演示文稿</h2>
                     </div>
                     <div className="w-full max-w-md bg-white/80 backdrop-blur-sm rounded-xl shadow-sm p-6 mb-4">
                         <div className="min-h-[120px] flex items-center justify-center">

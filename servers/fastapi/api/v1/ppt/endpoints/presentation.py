@@ -280,12 +280,20 @@ async def stream_presentation(
             detail="Outlines can not be empty",
         )
 
+    print("="*60)
+    print("[MODE] 流式模式 (STREAM MODE) - stream_presentation")
+    print(f"[INFO] Presentation ID: {id}")
+    print("="*60)
+    
     image_generation_service = ImageGenerationService(get_images_directory())
 
     async def inner():
         structure = presentation.get_structure()
         layout = presentation.get_layout()
         outline = presentation.get_presentation_outline()
+        
+        total_slides = len(structure.slides)
+        print(f"[STREAM] Total slides to generate: {total_slides}")
 
         # These tasks will be gathered and awaited after all slides are generated
         async_assets_generation_tasks = []
@@ -297,6 +305,9 @@ async def stream_presentation(
         ).to_string()
         for i, slide_layout_index in enumerate(structure.slides):
             slide_layout = layout.slides[slide_layout_index]
+            
+            print(f"[STREAM] Slide [{i+1}/{total_slides}] Start - Layout: {slide_layout.id}")
+            slide_start_time = datetime.now()
 
             try:
                 slide_content = await get_slide_content_from_type_and_outline(
@@ -307,7 +318,11 @@ async def stream_presentation(
                     presentation.verbosity,
                     presentation.instructions,
                 )
+                slide_elapsed = (datetime.now() - slide_start_time).total_seconds()
+                print(f"[STREAM] Slide [{i+1}/{total_slides}] End - Elapsed: {slide_elapsed:.2f}s")
             except HTTPException as e:
+                slide_elapsed = (datetime.now() - slide_start_time).total_seconds()
+                print(f"[STREAM] Slide [{i+1}/{total_slides}] ERROR - Elapsed: {slide_elapsed:.2f}s - {e.detail}")
                 yield SSEErrorResponse(detail=e.detail).to_string()
                 return
 
@@ -688,10 +703,16 @@ async def generate_presentation_handler(
 
         # Schedule slide content generation and asset fetching in batches of 10
         batch_size = 10
+        total_slides = len(slide_layouts)
+        print(f"[BATCH] Total slides to generate: {total_slides}, Batch size: {batch_size}")
+        
         for start in range(0, len(slide_layouts), batch_size):
             end = min(start + batch_size, len(slide_layouts))
+            batch_num = (start // batch_size) + 1
+            total_batches = math.ceil(len(slide_layouts) / batch_size)
 
-            print(f"Generating slides from {start} to {end}")
+            print(f"[BATCH {batch_num}/{total_batches}] Slides [{start+1}-{end}/{total_slides}] Start")
+            batch_start_time = datetime.now()
 
             # Generate contents for this batch concurrently
             content_tasks = [
@@ -706,6 +727,8 @@ async def generate_presentation_handler(
                 for i in range(start, end)
             ]
             batch_contents: List[dict] = await asyncio.gather(*content_tasks)
+            batch_elapsed = (datetime.now() - batch_start_time).total_seconds()
+            print(f"[BATCH {batch_num}/{total_batches}] Slides [{start+1}-{end}/{total_slides}] End - Elapsed: {batch_elapsed:.2f}s - Avg: {batch_elapsed/(end-start):.2f}s/slide")
 
             # Build slides for this batch
             batch_slides: List[SlideModel] = []
@@ -814,6 +837,11 @@ async def generate_presentation_sync(
     sql_session: AsyncSession = Depends(get_async_session),
 ):
     try:
+        print("="*60)
+        print("[MODE] 同步模式 (SYNC MODE) - generate_presentation_sync")
+        print(f"[INFO] Slides: {request.n_slides}, Language: {request.language}, Template: {request.template}")
+        print("="*60)
+        
         (presentation_id,) = await check_if_api_request_is_valid(request, sql_session)
         return await generate_presentation_handler(
             request, presentation_id, None, sql_session
@@ -832,6 +860,11 @@ async def generate_presentation_async(
     sql_session: AsyncSession = Depends(get_async_session),
 ):
     try:
+        print("="*60)
+        print("[MODE] 异步模式 (ASYNC MODE) - generate_presentation_async")
+        print(f"[INFO] Slides: {request.n_slides}, Language: {request.language}, Template: {request.template}")
+        print("="*60)
+        
         (presentation_id,) = await check_if_api_request_is_valid(request, sql_session)
 
         async_status = AsyncPresentationGenerationTaskModel(

@@ -1,6 +1,6 @@
 import React from "react";
 import { PresentationCard } from "./PresentationCard";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { Plus, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PresentationResponse } from "@/app/(presentation-generator)/services/api/dashboard";
 
@@ -29,11 +29,11 @@ export const PresentationGrid = ({
   };
 
   const ShimmerCard = () => (
-    <div className="flex flex-col gap-4 min-h-[200px] bg-white/70 rounded-lg p-4 animate-pulse">
-      <div className="w-full h-24 bg-gray-200 rounded-lg"></div>
-      <div className="space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+    <div className="flex flex-col gap-4 min-h-[240px] bg-white rounded-xl p-4 animate-pulse shadow-sm">
+      <div className="w-full aspect-video bg-slate-100 rounded-lg"></div>
+      <div className="space-y-3 mt-auto">
+        <div className="h-4 bg-slate-100 rounded w-3/4"></div>
+        <div className="h-3 bg-slate-100 rounded w-1/2"></div>
       </div>
     </div>
   );
@@ -41,17 +41,22 @@ export const PresentationGrid = ({
   const CreateNewCard = () => (
     <div
       onClick={handleCreateNewPresentation}
-      className="flex flex-col gap-4 min-h-[200px] cursor-pointer group border border-gray-400 hover:border-primary/60 bg-white/70 hover:bg-white/80 rounded-lg items-center justify-center transition-all duration-300"
+      className="group relative flex flex-col gap-4 min-h-[240px] cursor-pointer border-2 border-dashed border-slate-200 hover:border-indigo-300 bg-white/50 hover:bg-gradient-to-br hover:from-indigo-50/80 hover:to-purple-50/80 rounded-xl items-center justify-center transition-all duration-300 overflow-hidden"
     >
-      <div className="rounded-full bg-gray-200 group-hover:bg-primary/10 p-4 transition-all duration-300">
-        <PlusIcon className="w-8 h-8 text-gray-500 group-hover:text-primary transition-all duration-300" />
+      {/* Decorative gradient blob */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-indigo-200/40 to-purple-200/40 rounded-full blur-2xl" />
       </div>
-      <div className="text-center">
-        <h3 className="font-semibold text-gray-700 group-hover:text-gray-900 mb-1">
-          Create {type === "slide" ? "New" : "Video"} Presentation
+
+      <div className="relative z-10 flex flex-col items-center">
+        <div className="rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 group-hover:from-indigo-100 group-hover:to-purple-100 p-4 mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-indigo-200/50">
+          <Wand2 className="w-8 h-8 text-slate-400 group-hover:text-indigo-600 transition-colors duration-300" />
+        </div>
+        <h3 className="font-semibold text-slate-700 group-hover:text-slate-900 mb-1 transition-colors">
+          新建演示文稿
         </h3>
-        <p className="text-sm text-gray-500 group-hover:text-gray-600 px-4">
-          Start from scratch and bring your ideas to life
+        <p className="text-sm text-slate-400 group-hover:text-slate-500 text-center px-6 transition-colors">
+          让 AI 帮你创建专业 PPT
         </p>
       </div>
     </div>
@@ -59,14 +64,14 @@ export const PresentationGrid = ({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="flex flex-col gap-4 min-h-[200px] cursor-pointer group border border-gray-400 bg-white/70 rounded-lg items-center justify-center animate-pulse">
-          <div className="rounded-full bg-gray-200 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="flex flex-col gap-4 min-h-[240px] cursor-pointer border-2 border-dashed border-slate-200 bg-white/50 rounded-xl items-center justify-center animate-pulse">
+          <div className="rounded-2xl bg-slate-100 p-4 mb-4">
             <div className="w-8 h-8" />
           </div>
-          <div className="text-center space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-32 mx-auto"></div>
-            <div className="h-3 bg-gray-200 rounded w-48 mx-auto"></div>
+          <div className="text-center space-y-2 px-6">
+            <div className="h-4 bg-slate-100 rounded w-28 mx-auto"></div>
+            <div className="h-3 bg-slate-100 rounded w-36 mx-auto"></div>
           </div>
         </div>
         {[...Array(3)].map((_, i) => (
@@ -78,16 +83,16 @@ export const PresentationGrid = ({
 
   if (error) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <CreateNewCard />
-        <div className="col-span-3 flex items-center justify-center">
-          <div className="text-center text-gray-500">
+        <div className="col-span-full sm:col-span-1 lg:col-span-2 xl:col-span-3 flex items-center justify-center py-12">
+          <div className="text-center text-slate-500">
             <p className="mb-2">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="text-primary hover:text-primary/80 underline"
+              className="text-indigo-600 hover:text-indigo-700 font-medium underline underline-offset-2"
             >
-              Try again
+              重试
             </button>
           </div>
         </div>
@@ -95,21 +100,37 @@ export const PresentationGrid = ({
     );
   }
 
+  // Empty state
+  if (!presentations || presentations.length === 0) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <CreateNewCard />
+        <div className="col-span-full sm:col-span-1 lg:col-span-2 xl:col-span-3 flex items-center justify-center py-16">
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
+              <Plus className="w-8 h-8 text-slate-400" />
+            </div>
+            <h3 className="text-lg font-medium text-slate-700 mb-2">还没有演示文稿</h3>
+            <p className="text-slate-500">点击左侧卡片或使用上方输入框创建你的第一个演示文稿</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <CreateNewCard />
-      {presentations &&
-        presentations.length > 0 &&
-        presentations.map((presentation) => (
-          <PresentationCard
-            key={presentation.id}
-            id={presentation.id}
-            title={presentation.title}
-            created_at={presentation.created_at}
-            slide={presentation.slides[0]}
-            onDeleted={onPresentationDeleted}
-          />
-        ))}
+      {presentations.map((presentation) => (
+        <PresentationCard
+          key={presentation.id}
+          id={presentation.id}
+          title={presentation.title}
+          created_at={presentation.created_at}
+          slide={presentation.slides[0]}
+          onDeleted={onPresentationDeleted}
+        />
+      ))}
     </div>
   );
 };
