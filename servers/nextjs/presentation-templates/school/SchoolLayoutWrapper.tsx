@@ -108,4 +108,17 @@ const SchoolLayoutWrapper: React.FC<SchoolLayoutWrapperProps> = ({
     )
 }
 
+export const Schema = {
+    title: {
+        type: "string",
+        title: "页面标题",
+        description: "显示在页眉的标题"
+    },
+    pageNum: {
+        type: "number",
+        title: "页码",
+        description: "当前页码"
+    }
+}
+
 export default SchoolLayoutWrapper
