@@ -30,6 +30,7 @@ export async function GET() {
                     !file.startsWith('.') && 
                     !file.includes('.test.') &&
                     !file.includes('.spec.') &&
+                    !file.endsWith('Wrapper.tsx') &&
                     file !== 'settings.json'
                 )
                 
