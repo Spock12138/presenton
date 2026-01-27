@@ -94,10 +94,10 @@ const FontManager: React.FC<FontManagerProps> = ({
       <CardHeader>
         <CardTitle className="text-xl flex items-center gap-2">
           <Type className="w-6 h-6" />
-          字体管理
+          Font Management
         </CardTitle>
         <p className="text-sm text-gray-600">
-          我们无法自动加载这些字体。请手动上传。确保字体名称与显示完全一致。
+          We couldn't load these fonts automatically. Please upload them manually. Make sure naem of the font should be exactly as shown. 
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -106,7 +106,7 @@ const FontManager: React.FC<FontManagerProps> = ({
           <div>
             <h4 className="text-sm font-medium text-green-700 mb-3 flex items-center gap-1">
               <CheckCircle className="w-4 h-4" />
-              已支持字体 ({fontsData.internally_supported_fonts.length})
+              Supported Fonts ({fontsData.internally_supported_fonts.length})
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {fontsData.internally_supported_fonts.map((font, index) => (
@@ -126,7 +126,7 @@ const FontManager: React.FC<FontManagerProps> = ({
           <div>
             <h4 className="text-sm font-medium text-orange-700 mb-3 flex items-center gap-1">
               <AlertCircle className="w-4 h-4" />
-              需要上传的字体 ({fontsNeedingUpload.length})
+              Fonts Needing Upload ({fontsNeedingUpload.length})
             </h4>
             <div className="space-y-3">
               {fontsNeedingUpload.map((fontName: string, index: number) => (
@@ -140,7 +140,7 @@ const FontManager: React.FC<FontManagerProps> = ({
                         {fontName}
                       </span>
                       <p className="text-xs text-orange-600 mt-1">
-                        演示文稿所需
+                        Required for presentation
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -164,12 +164,12 @@ const FontManager: React.FC<FontManagerProps> = ({
                         {uploadingFonts.has(fontName) ? (
                           <>
                             <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                            上传中...
+                            Uploading...
                           </>
                         ) : (
                           <>
                             <Upload className="w-3 h-3 mr-1" />
-                            上传字体
+                            Upload Font
                           </>
                         )}
                       </Button>
@@ -186,7 +186,7 @@ const FontManager: React.FC<FontManagerProps> = ({
           <div>
             <h4 className="text-sm font-medium text-green-700 mb-3 flex items-center gap-1">
               <CheckCircle className="w-4 h-4" />
-              已上传字体 ({UploadedFonts.length})
+              Uploaded Fonts ({UploadedFonts.length})
             </h4>
             <div className="space-y-2">
               {UploadedFonts.map((font, index) => (
@@ -199,7 +199,7 @@ const FontManager: React.FC<FontManagerProps> = ({
                       {font.fontName}
                     </span>
                     <p className="text-xs text-green-600 mt-1">
-                      可用于所有幻灯片
+                      Available for all slides
                     </p>
                   </div>
                   <Button
@@ -223,7 +223,7 @@ const FontManager: React.FC<FontManagerProps> = ({
           onClick={processSlideToHtml}
           className="text-xs px-8 py-2 font-semibold bg-blue-600 text-white hover:text-white hover:bg-blue-700 border-blue-600"
           >
-            提取模板
+            Extract Template
         </Button>
           </div>
       </CardContent>

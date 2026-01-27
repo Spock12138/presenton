@@ -1,31 +1,63 @@
 
-import React, { useState, useMemo } from 'react';
-import { Filter, ChevronDown, Check, Plus } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Filter, Check, Plus, Heart } from 'lucide-react';
 import { MOCK_TEMPLATES, FILTERS, SCHOOLS, Template, School } from './mockData';
 import { useRouter } from 'next/navigation';
+import { UserConfigApi } from '@/app/(presentation-generator)/services/api/user-config';
 
 interface TemplateGalleryProps {
   selectedSchool: School | null;
+  category?: 'recommended' | 'general' | 'favorites';
 }
 
-export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool }) => {
+export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool, category = 'recommended' }) => {
   const router = useRouter();
   const [selectedMajor, setSelectedMajor] = useState('全部');
   const [selectedUsage, setSelectedUsage] = useState('全部');
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Load favorites
+    UserConfigApi.getConfig().then(config => {
+      setFavorites(config.favorite_templates || []);
+    }).catch(console.error);
+  }, []);
+
+  const toggleFavorite = async (e: React.MouseEvent, templateId: string) => {
+    e.stopPropagation();
+    try {
+        const newFavorites = await UserConfigApi.toggleFavorite(templateId);
+        setFavorites(newFavorites);
+    } catch (err) {
+        console.error('Failed to toggle favorite', err);
+    }
+  };
 
   const filteredTemplates = useMemo(() => {
     return MOCK_TEMPLATES.filter(template => {
-      // School filter: if selectedSchool is set, show school specific + generic (all). 
-      // If no school selected, show everything (or maybe just generic? User said "First step is school selection").
-      // Let's show everything if no school selected for exploration, but prioritize.
-      const matchSchool = !selectedSchool || template.schoolId === selectedSchool.id || template.schoolId === 'all';
+      let matchCategory = true;
       
+      if (category === 'recommended') {
+         // Show school specific if school selected, otherwise show all SCHOOL specific templates (exclude generic).
+         if (selectedSchool) {
+             matchCategory = template.schoolId === selectedSchool.id;
+         } else {
+             // If no school selected, show all school-specific templates (exclude generic/universal)
+             matchCategory = template.schoolId !== 'all'; 
+         }
+       } else if (category === 'general') {
+         // Show only generic/universal templates
+         matchCategory = template.schoolId === 'all';
+       } else if (category === 'favorites') {
+        matchCategory = favorites.includes(template.id);
+      }
+
       const matchMajor = selectedMajor === '全部' || template.major === '全部' || template.major === selectedMajor;
       const matchUsage = selectedUsage === '全部' || template.usage === selectedUsage;
 
-      return matchSchool && matchMajor && matchUsage;
+      return matchCategory && matchMajor && matchUsage;
     });
-  }, [selectedSchool, selectedMajor, selectedUsage]);
+  }, [selectedSchool, selectedMajor, selectedUsage, category, favorites]);
 
   const handleTemplateClick = (template: Template) => {
     // Navigate to creation page with this template selected
@@ -119,6 +151,18 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool
                             </span>
                         ))}
                     </div>
+
+                    {/* Favorite Button */}
+                    <button
+                        onClick={(e) => toggleFavorite(e, template.id)}
+                        className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-sm transition-colors z-10 ${
+                            favorites.includes(template.id)
+                            ? 'bg-rose-500/90 text-white'
+                            : 'bg-black/30 text-white hover:bg-black/50 opacity-0 group-hover:opacity-100'
+                        }`}
+                    >
+                        <Heart className={`w-4 h-4 ${favorites.includes(template.id) ? 'fill-current' : ''}`} />
+                    </button>
                 </div>
 
                 {/* Content */}

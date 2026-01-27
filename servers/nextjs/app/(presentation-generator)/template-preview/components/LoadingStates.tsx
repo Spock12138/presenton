@@ -23,10 +23,10 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
 
             <div className="space-y-2">
               <h3 className="text-xl font-semibold text-gray-900">
-                加载布局中
+                Loading Layouts
               </h3>
               <p className="text-gray-600">
-                {message || "正在发现和加载布局组件..."}
+                {message || "Discovering and loading layout components..."}
               </p>
             </div>
 
@@ -62,11 +62,11 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
 
             <div className="space-y-2">
               <h3 className="text-xl font-semibold text-gray-900">
-                出错了
+                Something went wrong
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 {message ||
-                  "加载布局失败。请检查您的布局文件并重试。"}
+                  "Failed to load layouts. Please check your layout files and try again."}
               </p>
             </div>
           </CardContent>
@@ -86,15 +86,16 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
 
             <div className="space-y-2">
               <h3 className="text-xl font-semibold text-gray-700">
-                未找到模板
+                No Template Found
               </h3>
               <p className="text-gray-500 text-sm leading-relaxed">
-                未发现有效的模板文件。请确保您的布局组件导出默认组件和 Schema。
+                No valid Template files were discovered. Make sure your layout
+                components export both a default component and a Schema.
               </p>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg text-left text-xs text-gray-600">
-              <p className="font-medium mb-2">预期结构：</p>
+              <p className="font-medium mb-2">Expected structure:</p>
               <code className="block">
                 export default MyLayout
                 <br />

@@ -112,13 +112,12 @@ async function closeBrowserAndPage(browser: Browser | null, page: Page | null) {
 }
 
 function getScreenshotsDir() {
-  let tempDir = process.env.TEMP_DIRECTORY;
+  const tempDir = process.env.TEMP_DIRECTORY;
   if (!tempDir) {
-    // Default to a temporary directory if env var not set
-    tempDir = path.join(process.cwd(), "..", "fastapi", "temp");
     console.warn(
-      `TEMP_DIRECTORY environment variable not set, defaulting to ${tempDir}`
+      "TEMP_DIRECTORY environment variable not set, skipping screenshot"
     );
+    throw new ApiError("TEMP_DIRECTORY environment variable not set");
   }
   const screenshotsDir = path.join(tempDir, "screenshots");
   if (!fs.existsSync(screenshotsDir)) {

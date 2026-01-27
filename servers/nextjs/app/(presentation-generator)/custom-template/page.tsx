@@ -84,7 +84,7 @@ const CustomTemplatePage = () => {
 
   // Loading state
   if (isRequiredKeyLoading) {
-    return <LoadingSpinner message="正在检查 API 密钥..." />;
+    return <LoadingSpinner message="Checking API Key..." />;
   }
 
   // Anthropic key warning
@@ -100,14 +100,15 @@ const CustomTemplatePage = () => {
         {/* Header */}
         <div className="text-center space-y-2 my-6">
           <h1 className="text-4xl font-bold text-gray-900">
-            第一步：创建自定义模版
+            Custom Template Processor
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            先上传您的 PDF 或 PPTX 文件创建专属模版，然后即可使用该模版生成 AI 演示文稿。
+            Upload your PDF or PPTX file to extract slides and convert them to
+            a template which you can use to generate AI presentations.
           </p>
           <div className="max-w-2xl mx-auto mt-2">
             <div className="inline-block rounded border border-orange-200 bg-orange-50 px-3 py-2 text-sm text-orange-700">
-              AI 模板生成每张幻灯片大约需要 5 分钟。
+              AI template generation can take around 5 minutes per slide.
             </div>
           </div>
         </div>

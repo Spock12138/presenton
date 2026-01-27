@@ -30,7 +30,6 @@ export async function GET() {
                     !file.startsWith('.') && 
                     !file.includes('.test.') &&
                     !file.includes('.spec.') &&
-                    !file.endsWith('Wrapper.tsx') &&
                     file !== 'settings.json'
                 )
                 
@@ -45,7 +44,7 @@ export async function GET() {
                     console.warn(`No settings.json found for template ${templateName} or invalid JSON`)
                     // Provide default settings if settings.json is missing or invalid
                     settings = {
-                        description: `${templateName} 演示文稿布局`,
+                        description: `${templateName} presentation layouts`,
                         ordered: false,
                         default: false
                     }

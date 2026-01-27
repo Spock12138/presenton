@@ -45,4 +45,7 @@ export interface LLMConfig {
 
   // Only used in UI settings
   USE_CUSTOM_URL?: boolean;
+  
+  // User Preferences
+  favorite_templates?: string[];
 }

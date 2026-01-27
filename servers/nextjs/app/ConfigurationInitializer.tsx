@@ -68,9 +68,8 @@ export function ConfigurationInitializer({ children }: { children: React.ReactNo
           setIsLoading(false);
         }
       } else if (route !== '/') {
-        // router.push('/');
-        // setLoadingToFalseAfterNavigatingTo('/');
-        setIsLoading(false);
+        router.push('/');
+        setLoadingToFalseAfterNavigatingTo('/');
       } else {
         setIsLoading(false);
       }

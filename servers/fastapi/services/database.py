@@ -24,7 +24,6 @@ from utils.db_utils import get_database_url_and_connect_args
 
 database_url, connect_args = get_database_url_and_connect_args()
 
-print(f"✅ Main Database URL: {database_url}")
 sql_engine: AsyncEngine = create_async_engine(database_url, connect_args=connect_args)
 async_session_maker = async_sessionmaker(sql_engine, expire_on_commit=False)
 
@@ -39,11 +38,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 import os
 
 # 1. 读取你在 .env 设置的 APP_DATA_DIRECTORY，如果没有则默认 ./app_data
-import sys
-# Get absolute path for default app_data directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-default_app_data = os.path.join(BASE_DIR, "app_data")
-app_data_dir = os.getenv("APP_DATA_DIRECTORY", default_app_data)
+app_data_dir = os.getenv("APP_DATA_DIRECTORY", "./app_data")
 
 # 2. 拼接数据库文件的完整路径 (例如 D:/project/.../app_data/presenton.db)
 # 注意：这里我们给数据库文件起名叫 presenton.db

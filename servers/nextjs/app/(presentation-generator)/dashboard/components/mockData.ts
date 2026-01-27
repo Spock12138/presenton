@@ -69,7 +69,7 @@ export const MOCK_TEMPLATES: Template[] = [
     thumbnail: 'https://images.unsplash.com/photo-1557682224-5b8590cd14b1?w=800&q=80',
     usage: '开题报告',
     major: '理工科',
-    tags: ['科技感', '蓝色'],
+    tags: ['浙江工业大学', '计算机', '开题报告'],
     description: '浙江工业大学开题报告专用，强调逻辑与结构。'
   },
    {

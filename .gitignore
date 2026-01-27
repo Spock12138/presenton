@@ -2,18 +2,6 @@
 venv/
 env/
 *.env
-*.db
-*.sqlite3
-
-# Python Build Artifacts
-build/
-dist/
-*.egg-info/
-
-# Chroma DB Data
-servers/fastapi/chroma/*.bin
-servers/fastapi/chroma/*.pickle
-servers/fastapi/chroma/*-*-*-*-*/
 
 # Python 缓存/编译文件
 __pycache__/
@@ -27,6 +15,7 @@ __pycache__/
 *.zip
 *.rar
 *.7z
+*.db
 
 # IDE 配置文件（可选，根据你的编辑器添加）
 .idea/
@@ -41,9 +30,10 @@ node_modules/
 .npm/
 
 # Chroma 模型大文件
-servers/fastapi/chroma/models/onnx/
+servers/fastapi/chroma/
 
 # 其他缓存/大文件
 *.tar.gz
 *.onnx
 *.node
+build/

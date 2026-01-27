@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import BackBtn from "@/components/BackBtn";
 import { usePathname, useRouter } from "next/navigation";
-import { Layout, Layers, Plus, LayoutDashboard } from "lucide-react";
+import { Layout, Layers, Plus, LayoutDashboard, FolderOpen } from "lucide-react";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 
 const Header = () => {
@@ -44,20 +44,20 @@ const Header = () => {
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span>仪表盘</span>
+              <span>首页</span>
             </Link>
             <Link
-              href="/template-preview"
+              href="/my-presentations"
               prefetch={false}
-              onClick={() => trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/template-preview" })}
+              onClick={() => trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/my-presentations" })}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                pathname === "/template-preview" 
+                pathname === "/my-presentations" 
                   ? "text-indigo-700 bg-indigo-50" 
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
-              <Layers className="w-4 h-4" />
-              <span>模板库</span>
+              <FolderOpen className="w-4 h-4" />
+              <span>我的演示</span>
             </Link>
           </nav>
 

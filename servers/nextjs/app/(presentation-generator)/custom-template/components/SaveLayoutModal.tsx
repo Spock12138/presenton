@@ -59,35 +59,35 @@ export const SaveLayoutModal: React.FC<SaveLayoutModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Save className="w-5 h-5 text-green-600" />
-            保存模板
+            Save Template
           </DialogTitle>
           <DialogDescription>
-            为您的模板输入名称和描述。这将帮助您稍后识别它。
+            Enter a name and description for your template. This will help you identify it later.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="layout-name" className="text-sm font-medium">
-              模板名称 *
+              Template Name *
             </Label>
             <Input
               id="layout-name"
               value={layoutName}
               onChange={(e) => setLayoutName(e.target.value)}
-              placeholder="输入模板名称..."
+              placeholder="Enter template name..."
               disabled={isSaving}
               className="w-full"
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="description" className="text-sm font-medium">
-              描述
+              Description
             </Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="为您的模板输入描述..."
+              placeholder="Enter a description for your template..."
               disabled={isSaving}
               className="w-full resize-none"
               rows={3}
@@ -100,7 +100,7 @@ export const SaveLayoutModal: React.FC<SaveLayoutModalProps> = ({
             onClick={handleClose}
             disabled={isSaving}
           >
-            取消
+            Cancel
           </Button>
           <Button
             onClick={handleSave}
@@ -110,12 +110,12 @@ export const SaveLayoutModal: React.FC<SaveLayoutModalProps> = ({
             {isSaving ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                保存中...
+                Saving...
               </>
             ) : (
               <>
                 <Save className="w-4 h-4 mr-2" />
-                保存模板
+                Save Template
               </>
             )}
           </Button>

@@ -25,12 +25,12 @@ export const SaveLayoutButton: React.FC<SaveLayoutButtonProps> = ({
         {isSaving ? (
           <>
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-            保存模板中...
+            Saving Template...
           </>
         ) : (
           <>
             <FileText className="w-5 h-5 mr-2" />
-            保存为模板
+            Save as Template
           </>
         )}
       </Button>

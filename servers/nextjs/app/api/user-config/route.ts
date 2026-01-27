@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
-import path from "path";
 import { LLMConfig } from "@/types/llm_config";
 
-const userConfigPath =
-  process.env.USER_CONFIG_PATH ||
-  path.join(process.cwd(), "../fastapi/app_data/user_config.json");
+const userConfigPath = process.env.USER_CONFIG_PATH!;
 const canChangeKeys = process.env.CAN_CHANGE_KEYS !== "false";
 
 export async function GET() {
@@ -94,6 +91,7 @@ export async function POST(request: Request) {
       userConfig.USE_CUSTOM_URL === undefined
         ? existingConfig.USE_CUSTOM_URL
         : userConfig.USE_CUSTOM_URL,
+    favorite_templates: userConfig.favorite_templates || existingConfig.favorite_templates,
   };
   fs.writeFileSync(userConfigPath, JSON.stringify(mergedConfig));
   return NextResponse.json(mergedConfig);

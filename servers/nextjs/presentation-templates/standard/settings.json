@@ -1,6 +1,5 @@
 {
-    "name": "标准",
-    "description": "用于演示的标准布局",
+    "description": "Standard layouts for presentations",
     "ordered": false,
     "default": false
 }

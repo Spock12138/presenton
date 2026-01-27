@@ -22,8 +22,6 @@ else:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from api.lifespan import app_lifespan
 from api.middlewares import UserConfigEnvUpdateMiddleware
 from api.v1.ppt.router import API_V1_PPT_ROUTER
@@ -32,14 +30,6 @@ from api.v1.mock.router import API_V1_MOCK_ROUTER
 
 
 app = FastAPI(lifespan=app_lifespan)
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, exc):
-    print(f"Validation Error: {exc}")
-    return JSONResponse(
-        status_code=422,
-        content={"detail": str(exc), "errors": exc.errors()},
-    )
 
 
 # Routers

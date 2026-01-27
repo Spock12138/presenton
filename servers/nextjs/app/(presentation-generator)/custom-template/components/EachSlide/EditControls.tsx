@@ -50,7 +50,7 @@ export const EditControls: React.FC<EditControlsProps> = ({
               className="flex items-center gap-1"
             >
               <Pencil size={14} />
-              画笔
+              Draw
             </Button>
 
             <Button
@@ -60,7 +60,7 @@ export const EditControls: React.FC<EditControlsProps> = ({
               className="flex items-center gap-1"
             >
               <Eraser size={14} />
-              橡皮擦
+              Erase
             </Button>
           </div>
 
@@ -112,7 +112,7 @@ export const EditControls: React.FC<EditControlsProps> = ({
             className="flex items-center gap-1"
           >
             <RotateCcw size={14} />
-            清除
+            Clear
           </Button>
         </div>
 
@@ -123,7 +123,7 @@ export const EditControls: React.FC<EditControlsProps> = ({
           className="flex items-center gap-1"
         >
           <X size={14} />
-          取消
+          Cancel
         </Button>
       </div>
 
@@ -133,12 +133,12 @@ export const EditControls: React.FC<EditControlsProps> = ({
           htmlFor="edit-prompt"
           className="text-sm font-medium font-inter text-gray-700"
         >
-          描述您想要进行的更改：
+          Describe the changes you want to make:
         </label>
         <div className="flex gap-2">
           <Textarea
             id="edit-prompt"
-            placeholder="在此输入您的提示...（例如：'将标题颜色更改为蓝色'，'为图像添加边框'等）"
+            placeholder="Enter your prompt here... (e.g., 'Change the title color to blue', 'Add a border to the image', etc.)"
             value={prompt}
             onChange={(e) => onPromptChange(e.target.value)}
             className="flex-1 font-inter duration-300 h-[70px] border-blue-200 border-2 rounded-lg outline-none focus:border-blue-500 focus:ring-0 max-h-[70px] resize-none"
@@ -151,11 +151,11 @@ export const EditControls: React.FC<EditControlsProps> = ({
               className="flex flex-col w-28 font-inter font-semibold items-center gap-1 h-full bg-green-600 hover:bg-green-700 px-4"
             >
               {isUpdating ? (
-                "更新中..."
+                "Updating..."
               ) : (
                 <>
                   <SendHorizontal size={14} />
-                  更新
+                  Update
                 </>
               )}
             </Button>

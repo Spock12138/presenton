@@ -57,10 +57,7 @@ export const hasValidLLMConfig = (llmConfig: LLMConfig) => {
     llmConfig.CUSTOM_LLM_URL !== undefined &&
     llmConfig.CUSTOM_MODEL !== "" &&
     llmConfig.CUSTOM_MODEL !== null &&
-    llmConfig.CUSTOM_MODEL !== undefined &&
-    llmConfig.CUSTOM_LLM_API_KEY !== "" &&
-    llmConfig.CUSTOM_LLM_API_KEY !== null &&
-    llmConfig.CUSTOM_LLM_API_KEY !== undefined;
+    llmConfig.CUSTOM_MODEL !== undefined;
 
   const shouldValidateImages = !llmConfig.DISABLE_IMAGE_GENERATION;
 
