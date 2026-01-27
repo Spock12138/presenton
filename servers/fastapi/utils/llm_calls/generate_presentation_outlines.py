@@ -17,6 +17,7 @@ def get_system_prompt(
 ):
     return f"""
         You are an expert presentation creator. Generate structured presentations based on user requirements and format them according to the specified JSON schema with markdown content.
+        Return the output in JSON format.
 
         Try to use available tools for better results.
 

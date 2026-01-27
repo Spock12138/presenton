@@ -4,7 +4,7 @@ import { useParams, useRouter, usePathname } from "next/navigation";
 import LoadingStates from "../components/LoadingStates";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Home, Trash2, Code, Save, X, Pencil } from "lucide-react";
+import { ArrowLeft, Home, Trash2, Code, Save, X, Pencil, Play } from "lucide-react";
 import { useLayout } from "@/app/(presentation-generator)/context/LayoutContext";
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
@@ -28,11 +28,17 @@ const GroupLayoutPreview = () => {
   })();
   const pathname = usePathname();
 
-  const { getFullDataByTemplateID, loading, refetch } = useLayout();
+  const { getFullDataByTemplateID, loading, refetch, getTemplateSetting } = useLayout();
   const layoutGroup = getFullDataByTemplateID(rawSlug);
+  const templateSettings = getTemplateSetting(rawSlug);
 
   const isCustom = rawSlug.startsWith("custom-");
   const presentationId = isCustom && rawSlug.length > 7 ? rawSlug.slice(7) : "";
+
+  const [templateMeta, setTemplateMeta] = useState<{ name?: string; description?: string } | null>(null);
+  
+  const displayName = templateMeta?.name || templateSettings?.name || (layoutGroup[0]?.templateID || rawSlug);
+  const displayDescription = templateMeta?.description || templateSettings?.description || (layoutGroup[0]?.templateID || rawSlug);
 
   const [editorOpen, setEditorOpen] = useState(false);
   const [currentCode, setCurrentCode] = useState("");
@@ -41,7 +47,6 @@ const GroupLayoutPreview = () => {
   const [currentFonts, setCurrentFonts] = useState<string[] | undefined>(undefined);
   const [isSaving, setIsSaving] = useState(false);
   const [layoutsMap, setLayoutsMap] = useState<Record<string, { layout_id: string; layout_name: string; layout_code: string; fonts?: string[] }>>({});
-  const [templateMeta, setTemplateMeta] = useState<{ name?: string; description?: string } | null>(null);
 
 
 
@@ -194,7 +199,7 @@ const GroupLayoutPreview = () => {
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back
+              返回
             </Button>
             <Button
               variant="outline"
@@ -206,21 +211,31 @@ const GroupLayoutPreview = () => {
               className="flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
-              All Templates
+              所有模板
+            </Button>
+            <Button
+              onClick={() => {
+                // trackEvent(MixpanelEvent.TemplatePreview_Use_Template_Button_Clicked, { pathname });
+                router.push(`/upload?templateId=${rawSlug}`);
+              }}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2"
+            >
+              <Play className="w-4 h-4" />
+              使用此模版生成 PPT
             </Button>
             {isCustom && <button className=" border border-red-200 flex justify-center items-center gap-2 text-red-700 px-4 py-1 rounded-md" onClick={() => {
               trackEvent(MixpanelEvent.TemplatePreview_Delete_Templates_Button_Clicked, { pathname });
               trackEvent(MixpanelEvent.TemplatePreview_Delete_Templates_API_Call);
               deleteLayouts();
-            }}><Trash2 className="w-4 h-4" />Delete</button>}
+            }}><Trash2 className="w-4 h-4" />删除</button>}
           </div>
 
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 capitalize">
-              {templateMeta?.name || layoutGroup[0].templateID} Layouts
+              {displayName} 布局
             </h1>
             <p className="text-gray-600 mt-2">
-              {layoutGroup.length} layout{layoutGroup.length !== 1 ? "s" : ""} • {templateMeta?.description || layoutGroup[0].templateID}
+              {layoutGroup.length} 个布局 • {displayDescription}
             </p>
           </div>
 
@@ -261,7 +276,7 @@ const GroupLayoutPreview = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700">
-                        Layout #{index + 1}
+                        布局 #{index + 1}
                       </div>
                       {isCustom && (
                         <Button
@@ -273,9 +288,9 @@ const GroupLayoutPreview = () => {
                             openEditor(fileName);
                           }}
                           disabled={!layoutsMap[fileName]}
-                          title={!layoutsMap[fileName] ? "Loading layout code..." : "Edit layout code"}
+                          title={!layoutsMap[fileName] ? "加载布局代码..." : "编辑布局代码"}
                         >
-                          <Pencil className="w-4 h-4" /> Edit
+                          <Pencil className="w-4 h-4" /> 编辑
                         </Button>
                       )}
                     </div>
@@ -297,7 +312,7 @@ const GroupLayoutPreview = () => {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center text-gray-600">
             <p>
-              {layoutGroup[0].templateID} • {layoutGroup.length} components
+              {displayName} • {layoutGroup.length} 个组件
             </p>
           </div>
         </div>
@@ -311,7 +326,7 @@ const GroupLayoutPreview = () => {
               <SheetTitle className="flex items-center justify-between w-full">
                 <span className="flex items-center gap-2 text-purple-800">
                   <Code className="w-5 h-5 text-purple-600" />
-                  HTML Editor
+                  HTML 编辑器
                 </span>
               </SheetTitle>
             </SheetHeader>
@@ -340,7 +355,7 @@ const GroupLayoutPreview = () => {
                     disabled={isSaving}
                   >
                     <X size={14} />
-                    Cancel
+                    取消
                   </Button>
                   <Button
                     onClick={handleSave}
@@ -349,7 +364,7 @@ const GroupLayoutPreview = () => {
                     disabled={isSaving}
                   >
                     <Save size={14} />
-                    Save HTML
+                    保存 HTML
                   </Button>
                 </div>
               </SheetTitle>

@@ -48,7 +48,7 @@ export const HtmlEditor: React.FC<HtmlEditorProps> = ({
           <SheetTitle className="flex items-center justify-between w-full">
             <span className="flex items-center gap-2 text-purple-800">
               <Code className="w-5 h-5 text-purple-600" />
-              HTML Editor
+              HTML 编辑器
             </span>
            
           </SheetTitle>
@@ -78,7 +78,7 @@ export const HtmlEditor: React.FC<HtmlEditorProps> = ({
                 className="flex items-center gap-1"
               >
                 <X size={14} />
-                Cancel
+                取消
               </Button>
               <Button
                 onClick={handleSave}
@@ -86,7 +86,7 @@ export const HtmlEditor: React.FC<HtmlEditorProps> = ({
                 size="sm"
               >
                 <Save size={14} />
-                Save HTML
+                保存 HTML
               </Button>
             </div>
           </SheetTitle>

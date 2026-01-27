@@ -1,5 +1,6 @@
 {
-    "description": "General purpose layouts for common presentation elements",
+    "name": "通用",
+    "description": "用于常见演示元素的通用布局",
     "ordered": false,
     "default": true
 } 

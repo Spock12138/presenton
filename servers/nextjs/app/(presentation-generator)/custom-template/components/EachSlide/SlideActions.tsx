@@ -34,7 +34,7 @@ export const SlideActions: React.FC<SlideActionsProps> = ({
           {slide.processed && slide.html && !isEditMode && !isHtmlEditMode && (
             <>
               <div>
-                <ToolTip content="Edit slide with AI">
+                <ToolTip content="使用 AI 编辑幻灯片">
                   <button
                     onClick={onEditClick}
                     disabled={isProcessing || !slide.processed}
@@ -45,12 +45,12 @@ export const SlideActions: React.FC<SlideActionsProps> = ({
                     }`}
                   >
                     <Edit className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
-                    <span className="text-white">Edit Slide</span>
+                    <span className="text-white">AI 编辑</span>
                   </button>
                 </ToolTip>
               </div>
               <div>
-                <ToolTip content="Edit HTML directly">
+                <ToolTip content="直接编辑 HTML">
                   <button
                     onClick={onHtmlEditClick}
                     disabled={isProcessing || !slide.processed}
@@ -61,14 +61,14 @@ export const SlideActions: React.FC<SlideActionsProps> = ({
                     }`}
                   >
                     <Code className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
-                    <span className="text-white">Edit HTML</span>
+                    <span className="text-white">编辑 HTML</span>
                   </button>
                 </ToolTip>
               </div>
             </>
           )}
           <div>
-            <ToolTip content="Re-Design this slide">
+            <ToolTip content="重新设计此幻灯片">
               <button
                 onClick={onRetry}
                 disabled={isProcessing || !slide.processed}
@@ -79,12 +79,12 @@ export const SlideActions: React.FC<SlideActionsProps> = ({
                 }`}
               >
                 <Repeat2 className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
-                <span className="text-white">Re-Construct</span>
+                <span className="text-white">重构</span>
               </button>
             </ToolTip>
           </div>
           <div>
-            <ToolTip content="Delete Slide">
+            <ToolTip content="删除幻灯片">
               <button
                 disabled={isProcessing}
                 onClick={onDelete}

@@ -1,6 +1,6 @@
 {
-    "name": "University Academic",
-    "description": "Formal academic presentation layouts for university thesis defense and scholarly presentations",
+    "name": "学术/校园",
+    "description": "用于大学论文答辩和学术演示的正式学术演示布局",
     "tags": ["Formal", "School"],
     "ordered": false,
     "default": false

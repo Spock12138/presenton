@@ -36,6 +36,7 @@ const setupNodeModules = () => {
       cwd: nextjsDir,
       stdio: "inherit",
       env: process.env,
+      shell: true,
     });
 
     npmProcess.on("error", (err) => {
@@ -158,6 +159,7 @@ const startServers = async () => {
       cwd: nextjsDir,
       stdio: "inherit",
       env: process.env,
+      shell: true,
     }
   );
 
@@ -216,7 +218,7 @@ const main = async () => {
   }
 
   startServers();
-  startNginx();
+  // startNginx();
 };
 
 main();

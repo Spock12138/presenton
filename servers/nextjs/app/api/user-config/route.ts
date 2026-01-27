@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
+import path from "path";
 import { LLMConfig } from "@/types/llm_config";
 
-const userConfigPath = process.env.USER_CONFIG_PATH!;
+const userConfigPath =
+  process.env.USER_CONFIG_PATH ||
+  path.join(process.cwd(), "../fastapi/app_data/user_config.json");
 const canChangeKeys = process.env.CAN_CHANGE_KEYS !== "false";
 
 export async function GET() {

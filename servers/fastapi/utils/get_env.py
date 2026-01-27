@@ -1,24 +1,32 @@
 import os
 
+# Get the absolute path of the current working directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def get_can_change_keys_env():
     return os.getenv("CAN_CHANGE_KEYS")
 
 
 def get_database_url_env():
-    return os.getenv("DATABASE_URL")
+    default_db_path = os.path.join(BASE_DIR, "app_data", "presenton.db")
+    # Ensure Windows path format for SQLAlchemy
+    default_db_url = f"sqlite+aiosqlite:///{default_db_path}"
+    return os.getenv("DATABASE_URL", default_db_url)
 
 
 def get_app_data_directory_env():
-    return os.getenv("APP_DATA_DIRECTORY")
+    default_app_data = os.path.join(BASE_DIR, "app_data")
+    return os.getenv("APP_DATA_DIRECTORY", default_app_data)
 
 
 def get_temp_directory_env():
-    return os.getenv("TEMP_DIRECTORY")
+    default_temp = os.path.join(BASE_DIR, "temp")
+    return os.getenv("TEMP_DIRECTORY", default_temp)
 
 
 def get_user_config_path_env():
-    return os.getenv("USER_CONFIG_PATH")
+    default_config = os.path.join(BASE_DIR, "app_data", "user_config.json")
+    return os.getenv("USER_CONFIG_PATH", default_config)
 
 
 def get_llm_provider_env():

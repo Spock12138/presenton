@@ -10,8 +10,8 @@
  */
 
 "use client";
-import React, { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { clearOutlines, setPresentationId } from "@/store/slices/presentationGeneration";
 import { ConfigurationSelects } from "./ConfigurationSelects";
@@ -19,7 +19,7 @@ import { PromptInput } from "./PromptInput";
 import {  LanguageType, PresentationConfig, ToneType, VerbosityType } from "../type";
 import SupportingDoc from "./SupportingDoc";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { PresentationGenerationApi } from "../../services/api/presentation-generation";
 import { OverlayLoader } from "@/components/ui/overlay-loader";
@@ -39,14 +39,18 @@ interface LoadingState {
 const UploadPage = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const dispatch = useDispatch();
+
+  const templateId = searchParams.get('templateId');
+  const schoolName = searchParams.get('schoolName');
 
   // State management
   const [files, setFiles] = useState<File[]>([]);
   const [config, setConfig] = useState<PresentationConfig>({
     slides: "5",
     language: LanguageType.ChineseSimplified,
-    prompt: "",
+    prompt: searchParams.get('prompt') || "",
     tone: ToneType.Default,
     verbosity: VerbosityType.Standard,
     instructions: "",
@@ -196,12 +200,28 @@ const UploadPage = () => {
   return (
     <Wrapper className="pb-10 lg:max-w-[70%] xl:max-w-[65%]">
       <OverlayLoader
-        show={loadingState.isLoading}
+        isLoading={loadingState.isLoading}
         text={loadingState.message}
         showProgress={loadingState.showProgress}
         duration={loadingState.duration}
         extra_info={loadingState.extra_info}
       />
+
+      {templateId && (
+        <div className="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
+          <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-indigo-900">已应用专属模板</p>
+            <p className="text-sm text-indigo-600">
+              {schoolName ? `${schoolName} - ` : ''} 
+              <span className="font-semibold">{templateId}</span>
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 md:items-center md:flex-row justify-between py-4">
         <p></p>
         <ConfigurationSelects

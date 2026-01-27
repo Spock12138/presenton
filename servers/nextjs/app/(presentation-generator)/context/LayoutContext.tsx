@@ -39,6 +39,8 @@ export interface TemplateSetting {
   description: string;
   ordered: boolean;
   default?: boolean;
+  name?: string;
+  tags?: string[];
 }
 
 export interface TemplateResponse {
@@ -402,7 +404,7 @@ export const LayoutProvider: React.FC<{
 
         const settings = {
           templateName: templateName,
-          description: `Custom presentation layouts`,
+          description: "自定义演示文稿布局",
           ordered: false,
           default: false,
         };

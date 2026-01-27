@@ -24,6 +24,8 @@ def get_messages(
                 - If user prompt is not clear, select the layout that is most relevant to the slide data.
                 - If user prompt is not clear, select the layout that is most relevant to the slide data.
                 **Go through all notes and steps and make sure they are followed, including mentioned constraints**
+
+                Return the output in JSON format.
             """,
         ),
         LLMUserMessage(

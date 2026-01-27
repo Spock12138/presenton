@@ -34,6 +34,7 @@ def get_system_prompt(
     - Make sure to follow language guidelines.
     - Speaker note should be normal text, not markdown.
     - Speaker note should be simple, clear, concise and to the point.
+    - Provide output in json format.
 
     **Go through all notes and steps and make sure they are followed, including mentioned constraints**
     """

@@ -81,17 +81,19 @@ const Header = ({
       trackEvent(MixpanelEvent.Header_ExportAsPPTX_API_Call);
       const pptx_path = await PresentationGenerationApi.exportAsPPTX(pptx_model);
       if (pptx_path) {
-        // window.open(pptx_path, '_self');
+        toast.success("导出成功", {
+          description: `文件已保存至: ${pptx_path}`,
+          duration: 10000,
+        });
         downloadLink(pptx_path);
       } else {
         throw new Error("No path returned from export");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Export failed:", error);
       setShowLoader(false);
       toast.error("导出遇到问题", {
-        description:
-          "导出演示文稿时出错，请重试。",
+        description: error.message || "导出演示文稿时出错，请重试。",
       });
     } finally {
       setShowLoader(false);
