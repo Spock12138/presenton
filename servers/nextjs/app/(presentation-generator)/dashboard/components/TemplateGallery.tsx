@@ -1,12 +1,20 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { Filter, Check, Plus, Heart, Loader2, ExternalLink, Sparkles } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { Filter, Check, Plus, Heart, Loader2, ExternalLink, Sparkles, Upload, FileUp, X } from 'lucide-react';
 import { FILTERS, SCHOOLS, School } from './mockData';
 import { useRouter } from 'next/navigation';
 import { UserConfigApi } from '@/app/(presentation-generator)/services/api/user-config';
 import { useLayout } from '@/app/(presentation-generator)/context/LayoutContext';
 import { Card } from '@/components/ui/card';
 import { getHeader } from '@/app/(presentation-generator)/services/api/header';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 interface TemplateGalleryProps {
   selectedSchool: School | null;
@@ -18,6 +26,12 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool
   const [selectedMajor, setSelectedMajor] = useState('全部');
   const [selectedUsage, setSelectedUsage] = useState('全部');
   const [favorites, setFavorites] = useState<string[]>([]);
+  
+  // 模板上传对话框状态
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   
   // 自定义模板的元数据（名称、描述、更新时间）
   const [customTemplateMeta, setCustomTemplateMeta] = useState<Record<string, { 
@@ -166,6 +180,87 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool
       params.set('schoolName', selectedSchool.name);
     }
     router.push(`/upload?${params.toString()}`);
+  };
+
+  // 模板上传相关处理函数
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.name.toLowerCase().endsWith('.pptx')) {
+        setUploadFile(file);
+      } else {
+        toast.error('仅支持 .pptx 格式的文件');
+      }
+    }
+  }, []);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.name.toLowerCase().endsWith('.pptx')) {
+        setUploadFile(file);
+      } else {
+        toast.error('仅支持 .pptx 格式的文件');
+      }
+    }
+  }, []);
+
+  const handleUploadTemplate = async () => {
+    if (!uploadFile) return;
+    
+    // 验证文件大小 (50MB)
+    const maxSize = 50 * 1024 * 1024;
+    if (uploadFile.size > maxSize) {
+      toast.error('文件大小不能超过 50MB');
+      return;
+    }
+    
+    setIsUploading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', uploadFile);
+      
+      const response = await fetch('/api/v1/templates/request-upload', {
+        method: 'POST',
+        // 不设置 Content-Type，让浏览器自动设置 multipart/form-data 和 boundary
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || '上传失败');
+      }
+      
+      toast.success('上传成功！我们正在处理您的模板，请耐心等待。');
+      setIsUploadDialogOpen(false);
+      setUploadFile(null);
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(error instanceof Error ? error.message : '上传失败，请重试');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleOpenUploadDialog = () => {
+    setUploadFile(null);
+    setIsUploadDialogOpen(true);
   };
 
   // 加载状态
@@ -462,7 +557,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool
 
         {/* Add Custom Template Card */}
         <Card
-          onClick={() => router.push('/custom-template')}
+          onClick={handleOpenUploadDialog}
           className="cursor-pointer hover:shadow-lg transition-all duration-200 group border-2 border-dashed border-slate-300 hover:border-indigo-500"
         >
           <div className="p-6 h-full flex flex-col">
@@ -470,17 +565,114 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool
               <h3 className="text-lg font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
                 添加自定义模版
               </h3>
-              <Plus className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+              <Upload className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
             </div>
             <p className="text-sm text-slate-600 mb-4">
-              先创建模版，再生成 PPT
+              上传您的 PPT 模板，我们将人工审核后录入系统
             </p>
             <div className="flex-1 flex items-center justify-center min-h-[200px] bg-slate-50 rounded-lg group-hover:bg-indigo-50 transition-colors">
-              <Plus className="w-12 h-12 text-slate-300 group-hover:text-indigo-400 transition-colors" />
+              <FileUp className="w-12 h-12 text-slate-300 group-hover:text-indigo-400 transition-colors" />
             </div>
           </div>
         </Card>
       </div>
+
+      {/* Template Upload Dialog */}
+      <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">提交模板收录申请</DialogTitle>
+            <DialogDescription className="text-slate-600">
+              上传您学校或公司的 PPT 模板，我们团队将人工适配并录入系统，以确保最佳质量。
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            {/* Drop Zone */}
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`
+                relative border-2 border-dashed rounded-lg p-8 text-center transition-colors
+                ${isDragging 
+                  ? 'border-indigo-500 bg-indigo-50' 
+                  : uploadFile 
+                    ? 'border-green-500 bg-green-50' 
+                    : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50'
+                }
+              `}
+            >
+              <input
+                type="file"
+                accept=".pptx"
+                onChange={handleFileSelect}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                disabled={isUploading}
+              />
+              
+              {uploadFile ? (
+                <div className="space-y-2">
+                  <div className="w-12 h-12 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                    <Check className="w-6 h-6 text-green-600" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-900">{uploadFile.name}</p>
+                  <p className="text-xs text-slate-500">
+                    {(uploadFile.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setUploadFile(null);
+                    }}
+                    className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 mx-auto"
+                  >
+                    <X className="w-3 h-3" /> 移除文件
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center">
+                    <FileUp className="w-6 h-6 text-slate-400" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-700">
+                    拖拽文件到此处，或点击选择文件
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    仅支持 .pptx 格式，最大 50MB
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Upload Button */}
+            <button
+              onClick={handleUploadTemplate}
+              disabled={!uploadFile || isUploading}
+              className={`
+                w-full py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2
+                ${uploadFile && !isUploading
+                  ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                }
+              `}
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  上传中...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  上传
+                </>
+              )}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
