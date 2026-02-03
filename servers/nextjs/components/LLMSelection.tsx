@@ -160,6 +160,10 @@ export default function LLMProviderSelection({
         return llmConfig.PEXELS_API_KEY || "";
       case "PIXABAY_API_KEY":
         return llmConfig.PIXABAY_API_KEY || "";
+      case "JIMENG_API_KEY":
+        return llmConfig.JIMENG_API_KEY || "";
+      case "JIMENG_BASE_URL":
+        return llmConfig.JIMENG_BASE_URL || "";
       default:
         return "";
     }
@@ -545,6 +549,8 @@ export default function LLMProviderSelection({
                 ) {
                   return <></>;
                 }
+
+
 
                 // Show ComfyUI configuration
                 if (provider.value === "comfyui") {

@@ -11,7 +11,7 @@
 
 "use client";
 import React, { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { clearOutlines, setPresentationId } from "@/store/slices/presentationGeneration";
 import { ConfigurationSelects } from "./ConfigurationSelects";
@@ -39,6 +39,8 @@ interface LoadingState {
 const UploadPage = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const templateId = searchParams.get('templateId');
   const dispatch = useDispatch();
 
   // State management
@@ -141,7 +143,10 @@ const UploadPage = () => {
     }));
     dispatch(clearOutlines())
     trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/documents-preview" });
-    router.push("/documents-preview");
+    
+    const params = new URLSearchParams();
+    if (templateId) params.set('templateId', templateId);
+    router.push(`/documents-preview?${params.toString()}`);
   };
 
   /**
@@ -174,7 +179,10 @@ const UploadPage = () => {
     dispatch(setPresentationId(createResponse.id));
     dispatch(clearOutlines())
     trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/outline" });
-    router.push("/outline");
+    
+    const params = new URLSearchParams();
+    if (templateId) params.set('templateId', templateId);
+    router.push(`/outline?${params.toString()}`);
   };
 
   /**

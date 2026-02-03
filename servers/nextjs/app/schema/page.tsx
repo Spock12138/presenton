@@ -7,14 +7,14 @@ const page = () => {
   const templateID = searchParams.get("group");
   const { getLayoutsByTemplateID, getTemplateSetting, loading } = useLayout();
   if (!templateID) {
-    return <div>No templateID provided</div>;
+    return <div>未提供模板 ID</div>;
   }
   const layouts = getLayoutsByTemplateID(templateID);
   const settings = getTemplateSetting(templateID);
   return (
     <div>
       {loading ? (
-        <div>Loading...</div>
+        <div>加载中...</div>
       ) : (
         <div>
           <div data-layouts={JSON.stringify(layouts)}>

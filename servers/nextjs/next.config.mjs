@@ -22,8 +22,8 @@ const nextConfig = {
     return [
       // 1. 保留原有的字体转发规则 (不要删)
       {
-        source: '/app_data/fonts/:path*',
-        destination: `${apiUrl}/app_data/fonts/:path*`,
+        source: '/app_data/:path*',
+        destination: `${apiUrl}/app_data/:path*`,
       },
       // 2. [新增] 关键！将 /api 开头的请求转发给后端
       {
@@ -79,6 +79,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
       },
     ],
   },

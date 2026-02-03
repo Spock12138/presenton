@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSearchParams } from "next/navigation";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { OverlayLoader } from "@/components/ui/overlay-loader";
@@ -15,14 +16,44 @@ import { useOutlineStreaming } from "../hooks/useOutlineStreaming";
 import { useOutlineManagement } from "../hooks/useOutlineManagement";
 import { usePresentationGeneration } from "../hooks/usePresentationGeneration";
 import TemplateSelection from "./TemplateSelection";
+import { useLayout } from "../../context/LayoutContext";
 
 const OutlinePage: React.FC = () => {
   const { presentation_id, outlines } = useSelector(
     (state: RootState) => state.presentationGeneration
   );
 
+  const { getLayoutsByTemplateID, getTemplateSetting, loading: layoutLoading } = useLayout();
+  const searchParams = useSearchParams();
+  const templateIdParam = searchParams.get('templateId');
+
   const [activeTab, setActiveTab] = useState<string>(TABS.OUTLINE);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [isTemplateValid, setIsTemplateValid] = useState(true);
+
+  useEffect(() => {
+    if (templateIdParam && !layoutLoading) {
+      if (!selectedTemplate) {
+        const slides = getLayoutsByTemplateID(templateIdParam);
+        if (slides && slides.length > 0) {
+          const settings = getTemplateSetting(templateIdParam);
+          const newTemplate: Template = {
+            id: templateIdParam,
+            name: settings?.name || templateIdParam,
+            description: settings?.description || "",
+            ordered: settings?.ordered || false,
+            default: settings?.default || false,
+            slides: slides
+          };
+          setSelectedTemplate(newTemplate);
+          setIsTemplateValid(true);
+        } else {
+           setIsTemplateValid(false);
+        }
+      }
+    }
+  }, [templateIdParam, layoutLoading, getLayoutsByTemplateID, getTemplateSetting, selectedTemplate]);
+
   // Custom hooks
   const streamState = useOutlineStreaming(presentation_id);
   const { handleDragEnd, handleAddSlide } = useOutlineManagement(outlines);
@@ -49,9 +80,9 @@ const OutlinePage: React.FC = () => {
       <Wrapper className="h-full flex flex-col w-full">
         <div className="flex-grow overflow-y-hidden w-[1200px] mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-            <TabsList className="grid w-[50%] mx-auto my-4 grid-cols-2">
+            <TabsList className={`grid w-[50%] mx-auto my-4 ${templateIdParam && isTemplateValid ? 'grid-cols-1' : 'grid-cols-2'}`}>
               <TabsTrigger value={TABS.OUTLINE}>大纲与内容</TabsTrigger>
-              <TabsTrigger value={TABS.LAYOUTS}>选择模板</TabsTrigger>
+              {(!templateIdParam || !isTemplateValid) && <TabsTrigger value={TABS.LAYOUTS}>选择模板</TabsTrigger>}
             </TabsList>
 
             <div className="flex-grow w-full mx-auto">
@@ -70,14 +101,16 @@ const OutlinePage: React.FC = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value={TABS.LAYOUTS} className="h-[calc(100vh-16rem)] overflow-y-auto custom_scrollbar">
-                <div>
-                  <TemplateSelection
-                    selectedTemplate={selectedTemplate}
-                    onSelectTemplate={setSelectedTemplate}
-                  />
-                </div>
-              </TabsContent>
+              {(!templateIdParam || !isTemplateValid) && (
+                <TabsContent value={TABS.LAYOUTS} className="h-[calc(100vh-16rem)] overflow-y-auto custom_scrollbar">
+                  <div>
+                    <TemplateSelection
+                      selectedTemplate={selectedTemplate}
+                      onSelectTemplate={setSelectedTemplate}
+                    />
+                  </div>
+                </TabsContent>
+              )}
             </div>
           </Tabs>
         </div>

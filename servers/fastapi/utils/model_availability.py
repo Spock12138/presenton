@@ -151,3 +151,8 @@ async def check_llm_and_image_provider_api_or_model_availability():
             workflow_json = get_comfyui_workflow_env()
             if not workflow_json:
                 raise Exception("COMFYUI_WORKFLOW must be provided")
+
+        elif selected_image_provider == ImageProvider.JIMENG:
+            jimeng_api_key = get_jimeng_api_key_env()
+            if not jimeng_api_key:
+                raise Exception("JIMENG_API_KEY must be provided")

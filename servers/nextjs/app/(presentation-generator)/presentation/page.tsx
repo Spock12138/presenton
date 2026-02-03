@@ -13,7 +13,7 @@ const page = () => {
       <div className="flex flex-col items-center justify-center h-screen">
         <h1 className="text-2xl font-bold">未找到演示文稿 ID</h1>
         <p className="text-gray-500 pb-4">请重试</p>
-        <Button onClick={() => router.push("/dashboard")}>返回仪表盘</Button>
+        <Button onClick={() => router.push("/upload")}>返回首页</Button>
       </div>
     );
   }

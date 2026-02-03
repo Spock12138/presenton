@@ -17,6 +17,17 @@ import { useFontLoader } from "../../hooks/useFontLoader";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 import { getHeader } from "../../services/api/header";
 
+const templateTranslationMap: Record<string, { name: string; description: string }> = {
+  "general": { name: "通用模板", description: "适用于常见演示元素的通用布局" },
+  "modern": { name: "现代商务", description: "适用于初创公司、推介会和现代商业演示的简洁现代布局" },
+  "school": { name: "通用校园", description: "适用于学术、教育和学校相关演示的校园主题布局" },
+  "school_hdu_opening": { name: "杭电开题", description: "杭州电子科技大学毕业设计开题报告专用模板" },
+  "school_zjut_opening": { name: "浙工大开题", description: "浙江工业大学毕业设计开题报告专用模板" },
+  "school_zust_opening": { name: "浙科大开题", description: "浙江科技大学毕业设计开题报告专用模板" },
+  "standard": { name: "标准模板", description: "包含各类标准内容布局的经典演示模板" },
+  "swift": { name: "极速模板", description: "适用于快速制作演示文稿的高效布局" },
+};
+
 const GroupLayoutPreview = () => {
   const params = useParams();
   const router = useRouter();
@@ -33,6 +44,7 @@ const GroupLayoutPreview = () => {
 
   const isCustom = rawSlug.startsWith("custom-");
   const presentationId = isCustom && rawSlug.length > 7 ? rawSlug.slice(7) : "";
+  const builtInMeta = templateTranslationMap[rawSlug];
 
   const [editorOpen, setEditorOpen] = useState(false);
   const [currentCode, setCurrentCode] = useState("");
@@ -194,7 +206,7 @@ const GroupLayoutPreview = () => {
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back
+              返回
             </Button>
             <Button
               variant="outline"
@@ -206,7 +218,7 @@ const GroupLayoutPreview = () => {
               className="flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
-              All Templates
+              首页
             </Button>
             {isCustom && <button className=" border border-red-200 flex justify-center items-center gap-2 text-red-700 px-4 py-1 rounded-md" onClick={() => {
               trackEvent(MixpanelEvent.TemplatePreview_Delete_Templates_Button_Clicked, { pathname });
@@ -297,7 +309,7 @@ const GroupLayoutPreview = () => {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center text-gray-600">
             <p>
-              {layoutGroup[0].templateID} • {layoutGroup.length} components
+              {builtInMeta?.name || layoutGroup[0].templateID} • {layoutGroup.length} 个组件
             </p>
           </div>
         </div>

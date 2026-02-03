@@ -23,6 +23,23 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({
     loading
   } = useLayout();
 
+  const TEMPLATE_NAME_MAP: Record<string, string> = {
+    'general': '通用模板',
+    'modern': '现代风格',
+    'professional': '专业商务',
+    'creative': '创意设计',
+    'simple': '简约风格',
+    'academic': '学术风格',
+    'dark': '深色模式',
+    'light': '浅色模式',
+    'school': '校园风格',
+    'school_hdu_opening': '杭电开题',
+    'school_zjut_opening': '浙工大开题',
+    'school_zust_opening': '浙科大开题',
+    'standard': '标准模板',
+    'swift': '极速模板',
+  };
+
   const [summaryMap, setSummaryMap] = React.useState<Record<string, { lastUpdatedAt?: number; name?: string; description?: string }>>({});
 
   useEffect(() => {
@@ -65,8 +82,8 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({
         const isCustom = templateID.toLowerCase().startsWith("custom-");
         return {
           id: templateID,
-          name: isCustom && customMeta?.name ? customMeta.name : templateID,
-          description: (isCustom && customMeta?.description) ? customMeta.description : (settings?.description || `${templateID} presentation templates`),
+          name: isCustom && customMeta?.name ? customMeta.name : (TEMPLATE_NAME_MAP[templateID.toLowerCase()] || templateID),
+          description: (isCustom && customMeta?.description) ? customMeta.description : (TEMPLATE_NAME_MAP[templateID.toLowerCase()] ? `${TEMPLATE_NAME_MAP[templateID.toLowerCase()]} 演示模板` : (settings?.description || `${templateID} 演示模板`)),
           ordered: settings?.ordered || false,
           default: settings?.default || false,
         };

@@ -10,6 +10,7 @@ export interface LayoutInfo {
 }
 
 export interface TemplateSetting {
+    name: string;
     description: string;
     ordered: boolean;
     default?: boolean;

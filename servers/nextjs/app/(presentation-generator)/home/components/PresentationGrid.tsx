@@ -2,7 +2,7 @@ import React from "react";
 import { PresentationCard } from "./PresentationCard";
 import { Plus, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { PresentationResponse } from "@/app/(presentation-generator)/services/api/dashboard";
+import { PresentationResponse } from "@/app/(presentation-generator)/services/api/home";
 
 interface PresentationGridProps {
   presentations: PresentationResponse[];

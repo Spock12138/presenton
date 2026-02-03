@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { setPresentationData } from "@/store/slices/presentationGeneration";
-import { DashboardApi } from '../../services/api/dashboard';
+import { HomeApi } from '../../services/api/home';
 import {  clearHistory } from "@/store/slices/undoRedoSlice";
 
 
@@ -15,7 +15,7 @@ export const usePresentationData = (
 
   const fetchUserSlides = useCallback(async () => {
     try {
-      const data = await DashboardApi.getPresentation(presentationId);
+      const data = await HomeApi.getPresentation(presentationId);
       if (data) {
         dispatch(setPresentationData(data));
         dispatch(clearHistory());

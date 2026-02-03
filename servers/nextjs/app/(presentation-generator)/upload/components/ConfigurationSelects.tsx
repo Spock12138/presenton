@@ -40,6 +40,12 @@ type SlideOption = "5" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "
 // Constants
 const SLIDE_OPTIONS: SlideOption[] = ["5", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"];
 
+const verbosityTranslationMap: Record<VerbosityType, string> = {
+  [VerbosityType.Concise]: "简洁",
+  [VerbosityType.Standard]: "标准",
+  [VerbosityType.Text_Heavy]: "详细",
+};
+
 /**
  * Renders a select component for slide count
  */
@@ -298,7 +304,7 @@ export function ConfigurationSelects({
                 <SelectContent className="font-instrument_sans">
                   {Object.values(VerbosityType).map((verbosity) => (
                     <SelectItem key={verbosity} value={verbosity} className="text-sm font-medium capitalize">
-                      {verbosity}
+                      {verbosityTranslationMap[verbosity] || verbosity}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -54,6 +54,10 @@ def get_messages(
                 User intruction should be taken into account while creating the presentation structure, except for number of slides.
 
                 Select layout index for each of the {n_slides} slides based on what will best serve the presentation's goals.
+                
+                IMPORTANT: Provide output in JSON format.
+                The output must be a JSON object with a single key "slides" which is a list of integers representing the layout indices.
+                Example: {{ "slides": [0, 2, 1, 0, 3] }}
             """,
         ),
         LLMUserMessage(
@@ -85,6 +89,10 @@ def get_messages_for_slides_markdown(
                 User intruction should be taken into account while creating the presentation structure, except for number of slides.
 
                 Select layout index for each of the {n_slides} slides based on what will best serve the presentation's goals.
+                
+                IMPORTANT: Provide output in JSON format.
+                The output must be a JSON object with a single key "slides" which is a list of integers representing the layout indices.
+                Example: {{ "slides": [0, 2, 1, 0, 3] }}
             """,
         ),
         LLMUserMessage(
@@ -130,7 +138,7 @@ async def generate_presentation_structure(
                 )
             ),
             response_format=response_model.model_json_schema(),
-            strict=True,
+            strict=False,
         )
         print("[DEBUG generate_presentation_structure] LLM call succeeded!")
         return PresentationStructureModel(**response)

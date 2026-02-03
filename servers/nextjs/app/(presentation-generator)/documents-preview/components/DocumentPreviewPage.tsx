@@ -19,7 +19,7 @@ import { OverlayLoader } from "@/components/ui/overlay-loader";
 import { PresentationGenerationApi } from "../../services/api/presentation-generation";
 import { setPresentationId } from "@/store/slices/presentationGeneration";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { RootState } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -27,7 +27,7 @@ import MarkdownRenderer from "./MarkdownRenderer";
 import { getIconFromFile } from "../../utils/others";
 import { ChevronRight, PanelRightOpen, X } from "lucide-react";
 import ToolTip from "@/components/ToolTip";
-import Header from "@/app/(presentation-generator)/dashboard/components/Header";
+import Header from "@/app/(presentation-generator)/home/components/Header";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 
 // Types
@@ -52,6 +52,8 @@ const DocumentsPreviewPage: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const templateId = searchParams.get('templateId');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Redux state
@@ -164,7 +166,10 @@ const DocumentsPreviewPage: React.FC = () => {
 
       dispatch(setPresentationId(createResponse.id));
       trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/outline" });
-      router.replace("/outline");
+      
+      const params = new URLSearchParams();
+      if (templateId) params.set('templateId', templateId);
+      router.replace(`/outline?${params.toString()}`);
     } catch (error: any) {
       console.error("Error in radar presentation creation:", error);
       toast.error("出错了", {

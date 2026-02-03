@@ -3,12 +3,12 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Header from "@/app/(presentation-generator)/dashboard/components/Header";
-import { SchoolSearchHero } from "@/app/(presentation-generator)/dashboard/components/SchoolSearchHero";
-import { TemplateGallery } from "@/app/(presentation-generator)/dashboard/components/TemplateGallery";
-import { School } from "@/app/(presentation-generator)/dashboard/components/mockData";
+import Header from "@/app/(presentation-generator)/home/components/Header";
+import { SchoolSearchHero } from "@/app/(presentation-generator)/home/components/SchoolSearchHero";
+import { TemplateGallery } from "@/app/(presentation-generator)/home/components/TemplateGallery";
+import { School } from "@/app/(presentation-generator)/home/components/mockData";
 
-const DashboardPage: React.FC = () => {
+const HomePage: React.FC = () => {
   const router = useRouter();
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
   const [activeTab, setActiveTab] = useState<'recommended' | 'general'>('recommended');
@@ -61,4 +61,4 @@ const DashboardPage: React.FC = () => {
   );
 };
 
-export default DashboardPage;
+export default HomePage;

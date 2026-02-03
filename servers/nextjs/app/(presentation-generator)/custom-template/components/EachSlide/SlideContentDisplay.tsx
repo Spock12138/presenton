@@ -36,15 +36,15 @@ export const SlideContentDisplay: React.FC<SlideContentDisplayProps> = ({
   if (slide.processing) {
     return (
       <div className="space-y-4">
-        <p className="text-base text-blue-600 font-medium">🔄 Converting to HTML...</p>
+        <p className="text-base text-blue-600 font-medium">🔄 正在转换为 HTML...</p>
         <div className="space-y-3">
           <Timer duration={160} />
         </div>
-         <div className="animate-pulse space-y-3">
-        <div className="h-6 bg-gray-200 rounded w-2/3"></div>
-        <div className="h-6 bg-gray-200 rounded w-1/2"></div>
-        <div className="h-64 bg-gray-200 rounded"></div>
-      </div>
+        <div className="animate-pulse space-y-3">
+          <div className="h-6 bg-gray-200 rounded w-2/3"></div>
+          <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-64 bg-gray-200 rounded"></div>
+        </div>
       </div>
     );
   }
@@ -116,7 +116,7 @@ export const SlideContentDisplay: React.FC<SlideContentDisplayProps> = ({
 
   return (
     <div className="space-y-4">
-      <p className="text-base text-gray-500">⏳ Waiting in queue to process...</p>
+      <p className="text-base text-gray-500">⏳ 正在排队等待处理...</p>
       <div className="animate-pulse space-y-3">
         <div className="h-6 bg-gray-200 rounded w-2/3"></div>
         <div className="h-6 bg-gray-200 rounded w-1/2"></div>

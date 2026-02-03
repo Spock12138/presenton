@@ -27,6 +27,8 @@ export interface LLMConfig {
   IMAGE_PROVIDER?: string;
   PEXELS_API_KEY?: string;
   PIXABAY_API_KEY?: string;
+  JIMENG_API_KEY?: string;
+  JIMENG_BASE_URL?: string;
 
   // ComfyUI
   COMFYUI_URL?: string;

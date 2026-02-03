@@ -22,7 +22,7 @@ export interface PresentationResponse {
     slides: any[];
 }
 
-export class DashboardApi {
+export class HomeApi {
 
   static async getPresentations(): Promise<PresentationResponse[]> {
     try {

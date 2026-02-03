@@ -22,7 +22,7 @@ const ZJUTLayoutWrapper: React.FC<ZJUTLayoutWrapperProps> = ({
             className="w-full rounded-sm max-w-[1280px] shadow-lg max-h-[720px] aspect-video relative z-20 mx-auto overflow-hidden flex flex-col"
             style={{
                 fontFamily: '"Source Han Serif SC", "Noto Serif SC", "Songti SC", "SimSun", "宋体", serif',
-                backgroundImage: 'url(/templates/school_zjut_opening/bg_watermark.jpg)',
+                backgroundImage: 'url(/templates/school_zjut_opening/bg_cover.jpg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import { Card } from "@/components/ui/card";
-import { DashboardApi } from "@/app/(presentation-generator)/services/api/dashboard";
+import { HomeApi } from "@/app/(presentation-generator)/services/api/home";
 import { MoreHorizontal, Trash2, Download, Edit3 } from "lucide-react";
 import {
   Popover,
@@ -51,7 +51,7 @@ export const PresentationCard = ({
     e.preventDefault();
     e.stopPropagation();
 
-    const response = await DashboardApi.deletePresentation(id);
+    const response = await HomeApi.deletePresentation(id);
 
     if (response) {
       toast.success("演示文稿已删除", {

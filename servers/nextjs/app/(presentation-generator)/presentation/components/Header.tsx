@@ -264,7 +264,7 @@ const Header = ({
 
         <Announcement />
         <Wrapper className="flex items-center justify-between py-2">
-          <Link href="/dashboard" className="min-w-[162px]">
+          <Link href="/home" className="min-w-[162px]">
             <img
               className="h-10 object-contain rounded-md"
               src="/jibaoLogo.png"

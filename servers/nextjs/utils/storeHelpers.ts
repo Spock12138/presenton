@@ -78,6 +78,13 @@ export const hasValidLLMConfig = (llmConfig: LLMConfig) => {
         return llmConfig.GOOGLE_API_KEY && llmConfig.GOOGLE_API_KEY !== "";
       case "nanobanana_pro":
         return llmConfig.GOOGLE_API_KEY && llmConfig.GOOGLE_API_KEY !== "";
+      case "jimeng":
+        return (
+          llmConfig.JIMENG_API_KEY &&
+          llmConfig.JIMENG_API_KEY !== "" &&
+          llmConfig.JIMENG_BASE_URL &&
+          llmConfig.JIMENG_BASE_URL !== ""
+        );
       case "comfyui":
         return llmConfig.COMFYUI_URL && llmConfig.COMFYUI_URL !== "";
       default:
