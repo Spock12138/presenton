@@ -24,6 +24,7 @@ export interface LayoutInfo {
   json_schema: any;
   templateID: string;
   templateName?: string;
+  sampleData?: any;
 }
 export interface FullDataInfo {
   name: string;
@@ -36,6 +37,7 @@ export interface FullDataInfo {
 }
 
 export interface TemplateSetting {
+  name: string;
   description: string;
   ordered: boolean;
   default?: boolean;
@@ -165,7 +167,7 @@ export const LayoutProvider: React.FC<{
 
         // template settings or default settings
         const settings = template.settings || {
-          templateName: template.templateName,
+          name: template.templateName || template.templateID,
           description: `${template.templateID} presentation layouts`,
           ordered: false,
           default: false,
@@ -215,11 +217,7 @@ export const LayoutProvider: React.FC<{
               module.layoutDescription ||
               `${layoutName} layout for presentations`;
 
-            const jsonSchema = z.toJSONSchema(module.Schema, {
-              override: (ctx) => {
-                delete ctx.jsonSchema.default;
-              },
-            });
+            const jsonSchema = z.toJSONSchema(module.Schema);
 
             const layout: LayoutInfo = {
               id: uniqueKey,
@@ -228,6 +226,7 @@ export const LayoutProvider: React.FC<{
               json_schema: jsonSchema,
               templateID: template.templateID,
               templateName: template.templateName,
+              sampleData: module.Schema.parse({}),
             };
 
             const sampleData = module.Schema.parse({});
@@ -401,7 +400,7 @@ export const LayoutProvider: React.FC<{
 
 
         const settings = {
-          templateName: templateName,
+          name: templateName,
           description: `Custom presentation layouts`,
           ordered: false,
           default: false,

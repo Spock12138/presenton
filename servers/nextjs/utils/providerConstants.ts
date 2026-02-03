@@ -88,6 +88,7 @@ export const IMAGE_PROVIDERS: Record<string, ImageProviderOption> = {
     apiKeyField: "COMFYUI_URL",
     apiKeyFieldLabel: "ComfyUI Server URL",
   },
+
 };
 
 export const LLM_PROVIDERS: Record<string, LLMProviderOption> = {

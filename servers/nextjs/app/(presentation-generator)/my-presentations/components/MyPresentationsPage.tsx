@@ -2,10 +2,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Header from "@/app/(presentation-generator)/dashboard/components/Header";
-import { PresentationGrid } from "@/app/(presentation-generator)/dashboard/components/PresentationGrid";
-import { TemplateGallery } from "@/app/(presentation-generator)/dashboard/components/TemplateGallery";
-import { DashboardApi } from "@/app/(presentation-generator)/services/api/dashboard";
+import Header from "@/app/(presentation-generator)/home/components/Header";
+import { PresentationGrid } from "@/app/(presentation-generator)/home/components/PresentationGrid";
+import { TemplateGallery } from "@/app/(presentation-generator)/home/components/TemplateGallery";
+import { HomeApi } from "@/app/(presentation-generator)/services/api/home";
 
 export const MyPresentationsPage: React.FC = () => {
   const [presentations, setPresentations] = useState<any>(null);
@@ -16,7 +16,7 @@ export const MyPresentationsPage: React.FC = () => {
     const fetchPresentations = async () => {
       try {
         setIsLoading(true);
-        const data = await DashboardApi.getPresentations();
+        const data = await HomeApi.getPresentations();
         data.sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
         setPresentations(data);
       } catch (err) {

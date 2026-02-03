@@ -41,6 +41,8 @@ export const updateLLMConfig = (
     custom_model: "CUSTOM_MODEL",
     pexels_api_key: "PEXELS_API_KEY",
     pixabay_api_key: "PIXABAY_API_KEY",
+    jimeng_api_key: "JIMENG_API_KEY",
+    jimeng_base_url: "JIMENG_BASE_URL",
     image_provider: "IMAGE_PROVIDER",
     disable_image_generation: "DISABLE_IMAGE_GENERATION",
     use_custom_url: "USE_CUSTOM_URL",

@@ -36,6 +36,8 @@ def get_system_prompt(
     - Speaker note should be simple, clear, concise and to the point.
 
     **Go through all notes and steps and make sure they are followed, including mentioned constraints**
+    
+    IMPORTANT: Provide output in JSON format.
     """
 
 

@@ -112,7 +112,7 @@ async def generate_ppt_outline(
                 include_title_slide,
             ),
             response_model.model_json_schema(),
-            strict=True,
+            strict=False,
             tools=(
                 [SearchWebTool]
                 if (client.enable_web_grounding() and web_search)

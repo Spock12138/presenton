@@ -61,7 +61,12 @@ class TempFileService:
     def cleanup_temp_dir(self, dir_path: str):
         if os.path.exists(dir_path):
             self.delete_dir_files(dir_path)
-            os.rmdir(dir_path)
+            try:
+                os.rmdir(dir_path)
+            except FileNotFoundError:
+                pass
+            except OSError:
+                pass
 
     def cleanup_base_dir(self):
         self.cleanup_temp_dir(self.base_dir)

@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 import { AlertCircle } from "lucide-react";
 import { setPresentationData } from "@/store/slices/presentationGeneration";
-import { DashboardApi } from "../services/api/dashboard";
+import { HomeApi } from "../services/api/home";
 import { useLayout } from "../context/LayoutContext";
 import { useFontLoader } from "../hooks/useFontLoader";
 import { useTemplateLayouts } from "../hooks/useTemplateLayouts";
@@ -57,7 +57,7 @@ const PresentationPage = ({ presentation_id }: { presentation_id: string }) => {
   // Function to fetch the user slides
   const fetchUserSlides = async () => {
     try {
-      const data = await DashboardApi.getPresentation(presentation_id);
+      const data = await HomeApi.getPresentation(presentation_id);
       dispatch(setPresentationData(data));
       setContentLoading(false);
     } catch (error) {

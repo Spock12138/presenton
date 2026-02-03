@@ -1,5 +1,5 @@
 "use client";
-import { LayoutDashboard, Settings, Upload } from "lucide-react";
+import { Home, Settings, Upload } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,15 +16,15 @@ const HeaderNav = () => {
     <div className="flex items-center gap-2">
 
       <Link
-        href="/dashboard"
+        href="/home"
         prefetch={false}
         className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors outline-none"
         role="menuitem"
-        onClick={() => trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/dashboard" })}
+        onClick={() => trackEvent(MixpanelEvent.Navigation, { from: pathname, to: "/home" })}
       >
-        <LayoutDashboard className="w-5 h-5" />
+        <Home className="w-5 h-5" />
         <span className="text-sm font-medium font-inter">
-          仪表盘
+          首页
         </span>
       </Link>
       {canChangeKeys && (

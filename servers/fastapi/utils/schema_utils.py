@@ -87,6 +87,72 @@ def add_field_in_schema(schema: dict, field: dict, required: bool = False) -> di
     return updated_schema
 
 
+def remove_defaults_from_schema(schema: dict):
+    """
+    Recursively remove 'default' keys from a JSON schema.
+    """
+    if not isinstance(schema, dict):
+        return schema
+    
+    # Remove 'default' key if present
+    if "default" in schema:
+        del schema["default"]
+        
+    # Recursively process dictionary values
+    for key, value in schema.items():
+        if isinstance(value, dict):
+            remove_defaults_from_schema(value)
+        elif isinstance(value, list):
+            for item in value:
+                if isinstance(item, dict):
+                    remove_defaults_from_schema(item)
+                    
+    return schema
+
+
+def clean_llm_response(response: Any, schema: dict) -> Any:
+    """
+    Cleans the LLM response to match the schema.
+    Specifically fixes cases where the LLM returns an object {text, icon} 
+    but the schema expects a string.
+    """
+    if not isinstance(schema, dict):
+        return response
+
+    schema_type = schema.get("type")
+
+    # CASE 1: Schema expects string, but got dict
+    if schema_type == "string":
+        if isinstance(response, dict):
+            # Prioritize 'text', then 'content', then 'title'
+            for key in ['text', 'content', 'title', 'value']:
+                if key in response and isinstance(response[key], str):
+                    return response[key]
+            
+            # If we can't find a text field, just return the string representation
+            # This handles edge cases but hopefully the above covers most
+            return str(response)
+        return response
+
+    # CASE 2: Schema expects object, recurse
+    if schema_type == "object" and isinstance(response, dict):
+        properties = schema.get("properties", {})
+        cleaned_response = {}
+        for key, value in response.items():
+            if key in properties:
+                cleaned_response[key] = clean_llm_response(value, properties[key])
+            else:
+                cleaned_response[key] = value
+        return cleaned_response
+
+    # CASE 3: Schema expects array, recurse
+    if schema_type == "array" and isinstance(response, list):
+        items_schema = schema.get("items", {})
+        return [clean_llm_response(item, items_schema) for item in response]
+
+    return response
+
+
 # From OpenAI
 def ensure_strict_json_schema(
     json_schema: object,
@@ -175,226 +241,48 @@ def ensure_strict_json_schema(
     # strip `None` defaults as there's no meaningful distinction here
     # the schema will still be `nullable` and the model will default
     # to using `None` anyway
-    if json_schema.get("default", NOT_GIVEN) is None:
-        json_schema.pop("default")
-
-    # we can't use `$ref`s if there are also other properties defined, e.g.
-    # `{"$ref": "...", "description": "my description"}`
-    #
-    # so we unravel the ref
-    # `{"type": "string", "description": "my description"}`
-    ref = json_schema.get("$ref")
-    if ref and has_more_than_n_keys(json_schema, 1):
-        assert isinstance(ref, str), f"Received non-string $ref - {ref}"
-
-        resolved = resolve_ref(root=root, ref=ref)
-        if not isinstance(resolved, dict):
-            raise ValueError(
-                f"Expected `$ref: {ref}` to resolved to a dictionary but got {resolved}"
-            )
-
-        # properties from the json schema take priority over the ones on the `$ref`
-        json_schema.update({**resolved, **json_schema})
-        json_schema.pop("$ref")
-        # Since the schema expanded from `$ref` might not have `additionalProperties: false` applied,
-        # we call `_ensure_strict_json_schema` again to fix the inlined schema and ensure it's valid.
-        return ensure_strict_json_schema(json_schema, path=path, root=root)
-
-    return json_schema
 
 
-def resolve_ref(*, root: dict[str, object], ref: str) -> object:
-    if not ref.startswith("#/"):
-        raise ValueError(f"Unexpected $ref format {ref!r}; Does not start with #/")
+def remove_titles_from_schema(schema: dict):
+    if not isinstance(schema, dict):
+        return schema
+    if "title" in schema:
+        del schema["title"]
+    for key, value in schema.items():
+        if isinstance(value, dict):
+            remove_titles_from_schema(value)
+        elif isinstance(value, list):
+            for item in value:
+                if isinstance(item, dict):
+                    remove_titles_from_schema(item)
+    return schema
 
-    path = ref[2:].split("/")
-    resolved = root
-    for key in path:
-        value = resolved[key]
-        assert isinstance(
-            value, dict
-        ), f"encountered non-dictionary entry while resolving {ref} - {resolved}"
-        resolved = value
 
-    return resolved
-
-
-# Flattens a JSON schema by inlining all $ref references and removing $defs/definitions
-def flatten_json_schema(schema: dict) -> dict:
-    root_schema = deepcopy(schema)
-
-    def _flatten(node: Any) -> Any:
+def flatten_json_schema(schema: dict):
+    """
+    Resolves $defs in the schema.
+    """
+    schema = deepcopy(schema)
+    defs = schema.pop("$defs", {}) or schema.pop("definitions", {})
+    
+    def resolve_refs(node):
         if isinstance(node, dict):
-            # If node is a pure $ref (or combined with extra fields), inline it
             if "$ref" in node:
-                ref_value = node["$ref"]
-                assert isinstance(
-                    ref_value, str
-                ), f"Received non-string $ref - {ref_value}"
-                resolved = resolve_ref(root=root_schema, ref=ref_value)
-                assert isinstance(
-                    resolved, dict
-                ), f"Expected `$ref: {ref_value}` to resolve to a dictionary but got {type(resolved)}"
-                # Merge: referenced first, then overlay current (excluding $ref)
-                merged: dict[str, Any] = deepcopy(resolved)
-                for key, value in node.items():
-                    if key == "$ref":
-                        continue
-                    merged[key] = value
-                return _flatten(merged)
-
-            flattened: dict[str, Any] = {}
-            for key, value in node.items():
-                # Drop defs/definitions in output
-                if key in ("$defs", "definitions"):
-                    continue
-                if key == "properties" and isinstance(value, dict):
-                    flattened[key] = {
-                        prop_key: _flatten(prop_val)
-                        for prop_key, prop_val in value.items()
-                    }
-                elif key in ("items", "contains", "additionalProperties", "not"):
-                    if isinstance(value, dict):
-                        flattened[key] = _flatten(value)
-                    elif isinstance(value, list):
-                        flattened[key] = [_flatten(v) for v in value]
-                    else:
-                        flattened[key] = value
-                elif key in ("allOf", "anyOf", "oneOf", "prefixItems") and isinstance(
-                    value, list
-                ):
-                    flattened[key] = [_flatten(v) for v in value]
-                else:
-                    flattened[key] = (
-                        _flatten(value) if isinstance(value, (dict, list)) else value
-                    )
-            return flattened
-        if isinstance(node, list):
-            return [_flatten(v) for v in node]
+                ref = node["$ref"]
+                # Assume ref is like "#/$defs/Name" or "#/definitions/Name"
+                name = ref.split("/")[-1]
+                if name in defs:
+                    # Merge definition into node
+                    definition = deepcopy(defs[name])
+                    # Recursive resolve in definition
+                    definition = resolve_refs(definition)
+                    return definition
+            
+            for k, v in node.items():
+                node[k] = resolve_refs(v)
+        elif isinstance(node, list):
+            for i, item in enumerate(node):
+                node[i] = resolve_refs(item)
         return node
 
-    result = _flatten(schema)
-    # Ensure top-level cleanup just in case
-    if isinstance(result, dict):
-        result.pop("$defs", None)
-        result.pop("definitions", None)
-    return result
-
-
-def remove_titles_from_schema(schema: dict) -> dict[str, Any]:
-
-    def _strip_titles(node: Any) -> Any:
-        if isinstance(node, dict):
-            rebuilt: dict[str, Any] = {}
-            for key, value in node.items():
-                # Preserve properties named "title" under the JSON Schema "properties" mapping
-                if key == "properties" and isinstance(value, dict):
-                    rebuilt[key] = {
-                        prop_name: _strip_titles(prop_schema)
-                        for prop_name, prop_schema in value.items()
-                    }
-                    continue
-
-                # Remove schema metadata field "title" elsewhere
-                if key == "title":
-                    continue
-
-                rebuilt[key] = _strip_titles(value)
-            return rebuilt
-        if isinstance(node, list):
-            return [_strip_titles(item) for item in node]
-        return node
-
-    return _strip_titles(deepcopy(schema))
-
-
-# ? Not used
-def generate_constraint_sentences(schema: dict) -> str:
-    """
-    Generate human-readable constraint sentences from a JSON schema.
-
-    Args:
-        schema: JSON schema dictionary
-
-    Returns:
-        String containing constraint sentences separated by newlines
-    """
-    constraints = []
-
-    def extract_constraints_recursive(obj, prefix=""):
-        if isinstance(obj, dict):
-            if "properties" in obj:
-                properties = obj["properties"]
-                for prop_name, prop_def in properties.items():
-                    current_path = f"{prefix}.{prop_name}" if prefix else prop_name
-
-                    if isinstance(prop_def, dict):
-                        prop_type = prop_def.get("type")
-
-                        # Handle string constraints
-                        if prop_type == "string":
-                            min_length = prop_def.get("minLength")
-                            max_length = prop_def.get("maxLength")
-
-                            if min_length is not None and max_length is not None:
-                                constraints.append(
-                                    f"    - {current_path} should be less than {max_length} characters and greater than {min_length} characters"
-                                )
-                            elif max_length is not None:
-                                constraints.append(
-                                    f"    - {current_path} should be less than {max_length} characters"
-                                )
-                            elif min_length is not None:
-                                constraints.append(
-                                    f"    - {current_path} should be greater than {min_length} characters"
-                                )
-
-                        # Handle array constraints
-                        elif prop_type == "array":
-                            min_items = prop_def.get("minItems")
-                            max_items = prop_def.get("maxItems")
-
-                            if min_items is not None and max_items is not None:
-                                constraints.append(
-                                    f"    - {current_path} should have more than {min_items} items and less than {max_items} items"
-                                )
-                            elif max_items is not None:
-                                constraints.append(
-                                    f"    - {current_path} should have less than {max_items} items"
-                                )
-                            elif min_items is not None:
-                                constraints.append(
-                                    f"    - {current_path} should have more than {min_items} items"
-                                )
-
-                        # Recurse into nested objects
-                        if prop_type == "object" or "properties" in prop_def:
-                            extract_constraints_recursive(prop_def, current_path)
-
-                        # Handle array items if they have properties
-                        if prop_type == "array" and "items" in prop_def:
-                            items_def = prop_def["items"]
-                            if isinstance(items_def, dict) and (
-                                "properties" in items_def
-                                or items_def.get("type") == "object"
-                            ):
-                                extract_constraints_recursive(
-                                    items_def, f"{current_path}[*]"
-                                )
-
-            # Also recurse into other nested structures
-            for key, value in obj.items():
-                if key not in [
-                    "properties",
-                    "type",
-                    "minLength",
-                    "maxLength",
-                    "minItems",
-                    "maxItems",
-                ] and isinstance(value, dict):
-                    extract_constraints_recursive(value, prefix)
-
-    # Start extraction from the root schema
-    extract_constraints_recursive(schema)
-
-    return "\n".join(constraints)
+    return resolve_refs(schema)

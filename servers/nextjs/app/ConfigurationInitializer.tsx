@@ -123,10 +123,10 @@ export function ConfigurationInitializer({ children }: { children: React.ReactNo
             {/* Loading Text */}
             <div className="space-y-2">
               <h3 className="text-lg font-semibold text-gray-800 font-inter">
-                Initializing Application
+                正在初始化应用
               </h3>
               <p className="text-sm text-gray-600 font-inter">
-                Loading configuration and checking model availability...
+                正在加载配置并检查模型可用性...
               </p>
             </div>
 

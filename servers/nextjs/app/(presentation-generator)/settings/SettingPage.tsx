@@ -11,7 +11,7 @@ import {
 } from "@/utils/providerUtils";
 import { useRouter, usePathname } from "next/navigation";
 import LLMProviderSelection from "@/components/LLMSelection";
-import Header from "../dashboard/components/Header";
+import Header from "../home/components/Header";
 import { LLMConfig } from "@/types/llm_config";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 
@@ -144,7 +144,7 @@ const SettingsPage = () => {
 
   useEffect(() => {
     if (!canChangeKeys) {
-      router.push("/dashboard");
+      router.push("/home");
     }
   }, [canChangeKeys, router]);
 

@@ -4,11 +4,22 @@ import { useRouter, usePathname } from "next/navigation";
 import LoadingStates from "./components/LoadingStates";
 import { Card } from "@/components/ui/card";
 import { Copy, ExternalLink } from "lucide-react";
-import Header from "@/app/(presentation-generator)/dashboard/components/Header";
+import Header from "@/app/(presentation-generator)/home/components/Header";
 import { useLayout } from "../context/LayoutContext";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 import { getHeader } from "../services/api/header";
 import { toast } from "sonner";
+
+const templateTranslationMap: Record<string, { name: string; description: string }> = {
+  "general": { name: "通用模板", description: "适用于常见演示元素的通用布局" },
+  "modern": { name: "现代商务", description: "适用于初创公司、推介会和现代商业演示的简洁现代布局" },
+  "school": { name: "通用校园", description: "适用于学术、教育和学校相关演示的校园主题布局" },
+  "school_hdu_opening": { name: "杭电开题", description: "杭州电子科技大学毕业设计开题报告专用模板" },
+  "school_zjut_opening": { name: "浙工大开题", description: "浙江工业大学毕业设计开题报告专用模板" },
+  "school_zust_opening": { name: "浙科大开题", description: "浙江科技大学毕业设计开题报告专用模板" },
+  "standard": { name: "标准模板", description: "包含各类标准内容布局的经典演示模板" },
+  "swift": { name: "极速模板", description: "适用于快速制作演示文稿的高效布局" },
+};
 
 const LayoutPreview = () => {
   const {
@@ -98,9 +109,9 @@ const LayoutPreview = () => {
       <div className=" sticky top-0 z-30">
         <div className="max-w-7xl mx-auto border-b px-6 py-6">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900">All Templates</h1>
+            <h1 className="text-3xl font-bold text-gray-900">所有模板</h1>
             <p className="text-gray-600 mt-2">
-              {layoutTemplates.length} templates
+              {layoutTemplates.length} 个模板
             </p>
           </div>
         </div>
@@ -108,12 +119,12 @@ const LayoutPreview = () => {
         <section className="h-full pt-8 pb-8 flex justify-center items-center">
           <div className="max-w-7xl mx-auto px-6 py-6 w-full">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Custom AI Templates</h2>
+              <h2 className="text-xl font-semibold text-gray-900">自定义 AI 模板</h2>
               <button className="text-sm text-gray-800 hover:text-blue-600 transition-colors flex items-center gap-2 group" onClick={() => {
                 trackEvent(MixpanelEvent.Navigation, { from: pathname, to: `/custom-template` });
                 router.push(`/custom-template`)
               }}>
-                Create Custom Template
+                创建自定义模板
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -193,14 +204,14 @@ const LayoutPreview = () => {
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-lg font-semibold text-gray-900 capitalize group-hover:text-blue-600 transition-colors">
-                        Create Custom Template
+                        创建自定义模板
                       </h3>
                       <div className="flex items-center gap-2">
                         <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">
-                      Create your first custom template
+                      创建您的第一个自定义模板
                     </p>
                   </div>
                 </Card>
@@ -212,13 +223,21 @@ const LayoutPreview = () => {
         {/* In Built Templates */}
         <section className="h-full pt-8 flex justify-center items-center">
           <div className="max-w-7xl mx-auto px-6 py-6 w-full">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Inbuilt Templates</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">内置模板</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {inBuiltTemplates.map((template) => {
                 const isCustom = template.templateID.toLowerCase().startsWith("custom-");
                 const meta = summaryMap[template.templateID];
-                const displayName = isCustom && meta?.name ? meta.name : template.templateID;
-                const displayDescription = isCustom && meta?.description ? meta.description : template.settings.description;
+                
+                // Use translation map for built-in templates
+                let displayName = isCustom && meta?.name ? meta.name : template.templateID;
+                let displayDescription = isCustom && meta?.description ? meta.description : template.settings.description;
+
+                if (!isCustom && templateTranslationMap[template.templateID]) {
+                    displayName = templateTranslationMap[template.templateID].name;
+                    displayDescription = templateTranslationMap[template.templateID].description;
+                }
+
                 const layoutTemplate = getFullDataByTemplateID(template.templateID);
                 return (
                   <Card

@@ -7,6 +7,8 @@ from services.icon_finder_service import ICON_FINDER_SERVICE
 from services.image_generation_service import ImageGenerationService
 from utils.asset_directory_utils import get_images_directory
 from utils.dict_utils import get_dict_at_path, get_dict_paths_with_key, set_dict_at_path
+from utils.get_env import get_app_data_directory_env
+import os
 
 
 async def process_slide_and_fetch_assets(
@@ -44,7 +46,25 @@ async def process_slide_and_fetch_assets(
         result = results.pop()
         if isinstance(result, ImageAsset):
             return_assets.append(result)
-            image_dict["__image_url__"] = result.path
+            
+            # Convert absolute path to web-accessible URL if it's in app_data
+            image_path = result.path
+            app_data_dir = get_app_data_directory_env()
+            
+            # Normalize paths to handle Windows backslashes
+            norm_image_path = os.path.normpath(image_path)
+            norm_app_data_dir = os.path.normpath(app_data_dir) if app_data_dir else None
+            
+            if norm_app_data_dir and norm_image_path.startswith(norm_app_data_dir):
+                # Replace absolute prefix with /app_data
+                # Use string slicing on normalized paths to be safe
+                relative_path = norm_image_path[len(norm_app_data_dir):].replace(os.sep, '/')
+                if not relative_path.startswith('/'):
+                    relative_path = '/' + relative_path
+                image_dict["__image_url__"] = f"/app_data{relative_path}"
+            else:
+                # Fallback or already a URL (though ImageAsset usually has path)
+                image_dict["__image_url__"] = image_path
         else:
             image_dict["__image_url__"] = result
         set_dict_at_path(slide.content, image_path, image_dict)
@@ -157,7 +177,23 @@ async def process_old_and_new_slides_and_fetch_assets(
             fetched_image = new_images[i]
             if isinstance(fetched_image, ImageAsset):
                 new_assets.append(fetched_image)
-                image_url = fetched_image.path
+                
+                # Convert absolute path to web-accessible URL if it's in app_data
+                image_path = fetched_image.path
+                app_data_dir = get_app_data_directory_env()
+                
+                # Normalize paths to handle Windows backslashes
+                norm_image_path = os.path.normpath(image_path)
+                norm_app_data_dir = os.path.normpath(app_data_dir) if app_data_dir else None
+                
+                if norm_app_data_dir and norm_image_path.startswith(norm_app_data_dir):
+                    # Replace absolute prefix with /app_data
+                    relative_path = norm_image_path[len(norm_app_data_dir):].replace(os.sep, '/')
+                    if not relative_path.startswith('/'):
+                        relative_path = '/' + relative_path
+                    image_url = f"/app_data{relative_path}"
+                else:
+                    image_url = image_path
             else:
                 image_url = fetched_image
             new_image_dicts[i]["__image_url__"] = image_url

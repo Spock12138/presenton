@@ -23,10 +23,10 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
 
             <div className="space-y-2">
               <h3 className="text-xl font-semibold text-gray-900">
-                Loading Layouts
+                正在加载模板
               </h3>
               <p className="text-gray-600">
-                {message || "Discovering and loading layout components..."}
+                {message || "正在发现并加载布局组件..."}
               </p>
             </div>
 
@@ -62,11 +62,11 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
 
             <div className="space-y-2">
               <h3 className="text-xl font-semibold text-gray-900">
-                Something went wrong
+                出错了
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 {message ||
-                  "Failed to load layouts. Please check your layout files and try again."}
+                  "加载模板失败。请检查布局文件并重试。"}
               </p>
             </div>
           </CardContent>
@@ -86,11 +86,10 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
 
             <div className="space-y-2">
               <h3 className="text-xl font-semibold text-gray-700">
-                No Template Found
+                未找到模板
               </h3>
               <p className="text-gray-500 text-sm leading-relaxed">
-                No valid Template files were discovered. Make sure your layout
-                components export both a default component and a Schema.
+                未发现有效的模板文件。请确保您的布局组件导出了默认组件和Schema。
               </p>
             </div>
 
@@ -98,8 +97,6 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
               <p className="font-medium mb-2">Expected structure:</p>
               <code className="block">
                 export default MyLayout
-                <br />
-                export const Schema = z.object(...)
               </code>
             </div>
           </CardContent>
@@ -109,65 +106,6 @@ const LoadingStates: React.FC<LoadingStatesProps> = ({ type, message }) => {
   }
 
   return null;
-};
-
-// Component for layout grid skeleton while loading
-export const LayoutGridSkeleton: React.FC = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header Skeleton */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
-              <div className="w-32 h-6 bg-gray-200 rounded animate-pulse"></div>
-            </div>
-            <div className="w-16 h-6 bg-gray-200 rounded animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Skeleton */}
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar Skeleton */}
-          <div className="lg:col-span-1 space-y-4">
-            <Card className="p-4">
-              <div className="space-y-3">
-                <div className="w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
-                <div className="space-y-2">
-                  <div className="w-full h-8 bg-gray-200 rounded animate-pulse"></div>
-                  <div className="w-full h-8 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {[...Array(6)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-full h-12 bg-gray-200 rounded animate-pulse"
-                    ></div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Main Display Skeleton */}
-          <div className="lg:col-span-3">
-            <Card className="p-6">
-              <div className="space-y-4">
-                <div className="w-full h-96 bg-gray-200 rounded-lg animate-pulse"></div>
-                <div className="space-y-2">
-                  <div className="w-48 h-4 bg-gray-200 rounded animate-pulse"></div>
-                  <div className="w-32 h-3 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export default LoadingStates;

@@ -41,7 +41,7 @@ export const useSlideProcessing = (
 
         const htmlData = await ApiResponseHandler.handleResponse(
           htmlResponse,
-          `Failed to convert slide ${slide.slide_number} to HTML`
+          `将幻灯片 ${slide.slide_number} 转换为 HTML 失败`
         );
 
         console.log(`Successfully processed slide ${slide.slide_number}`);
@@ -199,8 +199,8 @@ export const useSlideProcessing = (
     } catch (error) {
       console.error("Error processing file:", error);
       const errorMessage =
-        error instanceof Error ? error.message : "An unexpected error occurred";
-      toast.error("Processing failed", {
+        error instanceof Error ? error.message : "发生意外错误";
+      toast.error("处理失败", {
         description: errorMessage,
       });
     } finally {

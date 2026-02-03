@@ -45,6 +45,7 @@ export async function GET() {
                     console.warn(`No settings.json found for template ${templateName} or invalid JSON`)
                     // Provide default settings if settings.json is missing or invalid
                     settings = {
+                        name: templateName,
                         description: `${templateName} presentation layouts`,
                         ordered: false,
                         default: false

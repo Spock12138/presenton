@@ -95,7 +95,7 @@ const IconsEditor = ({
           onClick={(e) => e.stopPropagation()}
         >
           <SheetHeader>
-            <SheetTitle>Choose Icon</SheetTitle>
+            <SheetTitle>选择图标</SheetTitle>
           </SheetHeader>
 
           <div className="mt-6 space-y-4">
@@ -110,7 +110,7 @@ const IconsEditor = ({
               <div className="relative mb-3">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
                 <Input
-                  placeholder="Search icons..."
+                  placeholder="搜索图标..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
@@ -123,7 +123,7 @@ const IconsEditor = ({
                 className="w-full text-semibold text-[#51459e]"
                 onClick={(e) => e.stopPropagation()}
               >
-                Search
+                搜索
               </Button>
             </form>
 
@@ -157,8 +157,8 @@ const IconsEditor = ({
               ) : (
                 <div className="flex flex-col items-center justify-center w-full h-[60vh] text-center text-gray-500 space-y-4">
                   <Search className="w-12 h-12 text-gray-400" />
-                  <p className="text-sm">No icons found for your search.</p>
-                  <p className="text-xs">Try refining your search query.</p>
+                  <p className="text-sm">未找到相关图标。</p>
+                  <p className="text-xs">尝试修改您的搜索词。</p>
                 </div>
               )}
             </div>

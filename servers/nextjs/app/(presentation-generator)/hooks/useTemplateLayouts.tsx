@@ -30,6 +30,26 @@ export const useTemplateLayouts = () => {
     return (slide: any, isEditMode: boolean) => {
 
       const Layout = getTemplateLayout(slide.layout, slide.layout_group);
+      const layoutInfo = getLayoutById(slide.layout);
+
+      // Merge slide content with sample data to ensure defaults are populated
+      // This fixes issues where LLM might return empty strings or partial data
+      let mergedContent = slide.content;
+      
+      if (layoutInfo?.sampleData) {
+        const merged = { ...layoutInfo.sampleData, ...slide.content };
+        
+        // Ensure empty strings fallback to sample data defaults if available
+        Object.keys(merged).forEach(key => {
+           const value = merged[key];
+           // Check for null, undefined, or empty string (only if sample data has a non-empty value)
+           if ((value === null || value === undefined || value === "") && layoutInfo.sampleData[key]) {
+             merged[key] = layoutInfo.sampleData[key];
+           }
+        });
+        mergedContent = merged;
+      }
+
       if (loading) {
         return (
           <div className="flex flex-col items-center justify-center aspect-video h-full bg-gray-100 rounded-lg">
@@ -52,12 +72,12 @@ export const useTemplateLayouts = () => {
         return (
           <EditableLayoutWrapper
             slideIndex={slide.index}
-            slideData={slide.content}
+            slideData={mergedContent}
             properties={slide.properties}
           >
             <TiptapTextReplacer
               key={slide.id}
-              slideData={slide.content}
+              slideData={mergedContent}
               slideIndex={slide.index}
               onContentChange={(
                 content: string,
@@ -76,7 +96,7 @@ export const useTemplateLayouts = () => {
               }}
             >
               <SlideErrorBoundary label={`Slide ${slide.index + 1}`}>
-                <Layout data={slide.content} />
+                <Layout data={mergedContent} />
               </SlideErrorBoundary>
             </TiptapTextReplacer>
           </EditableLayoutWrapper>
@@ -84,11 +104,11 @@ export const useTemplateLayouts = () => {
       }
       return (
         <SlideErrorBoundary label={`Slide ${slide.index + 1}`}>
-          <Layout data={slide.content} />
+          <Layout data={mergedContent} />
         </SlideErrorBoundary>
       );
     };
-  }, [getTemplateLayout, dispatch]);
+  }, [getTemplateLayout, dispatch, getLayoutById, loading]);
 
   return {
     getTemplateLayout,

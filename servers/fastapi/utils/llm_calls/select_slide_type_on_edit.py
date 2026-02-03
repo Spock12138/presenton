@@ -24,6 +24,10 @@ def get_messages(
                 - If user prompt is not clear, select the layout that is most relevant to the slide data.
                 - If user prompt is not clear, select the layout that is most relevant to the slide data.
                 **Go through all notes and steps and make sure they are followed, including mentioned constraints**
+                
+                IMPORTANT: Provide output in JSON format.
+                The output must be a JSON object with a single key "index" which is an integer representing the selected layout index.
+                Example: {{ "index": 2 }}
             """,
         ),
         LLMUserMessage(
@@ -57,7 +61,7 @@ async def get_slide_layout_from_prompt(
                 slide_layout_index,
             ),
             response_format=SlideLayoutIndex.model_json_schema(),
-            strict=True,
+            strict=False,
         )
         index = SlideLayoutIndex(**response).index
         return layout.slides[index]

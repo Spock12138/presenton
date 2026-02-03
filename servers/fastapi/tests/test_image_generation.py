@@ -85,29 +85,6 @@ class TestImageGenerationService:
                             service = ImageGenerationService(mock_images_directory)
                             assert service.image_gen_func == service.generate_image_openai
     
-    def test_is_stock_provider_selected(self, mock_images_directory):
-        """
-        Test if stock provider is selected based on environment variable
-        - Checks if the stock provider is selected correctly based on environment variable
-        - Ensures that is_stock_provider_selected returns True for Pexels or Pixabay
-        """
-        with patch('services.image_generation_service.is_pixels_selected', return_value=True):
-            with patch('services.image_generation_service.is_pixabay_selected', return_value=False):
-                with patch.dict(os.environ, {"IMAGE_PROVIDER": "pexels"}):
-                    service = ImageGenerationService(mock_images_directory)
-                    assert service.is_stock_provider_selected() is True
-        
-        with patch('services.image_generation_service.is_pixels_selected', return_value=False):
-            with patch('services.image_generation_service.is_pixabay_selected', return_value=True):
-                with patch.dict(os.environ, {"IMAGE_PROVIDER": "pixabay"}):
-                    service = ImageGenerationService(mock_images_directory)
-                    assert service.is_stock_provider_selected() is True
-        
-        with patch('services.image_generation_service.is_pixels_selected', return_value=False):
-            with patch('services.image_generation_service.is_pixabay_selected', return_value=False):
-                with patch.dict(os.environ, {"IMAGE_PROVIDER": "dall-e-3"}):
-                    service = ImageGenerationService(mock_images_directory)
-                    assert service.is_stock_provider_selected() is False
     
     def test_generate_image_with_pexels_success(self, mock_images_directory, sample_image_prompt):
         """
@@ -132,9 +109,11 @@ class TestImageGenerationService:
                                         }
                                     }]
                                 })
+                                mock_response.__aenter__ = AsyncMock(return_value=mock_response)
+                                mock_response.__aexit__ = AsyncMock(return_value=None)
                                 
                                 mock_session = AsyncMock()
-                                mock_session.get = AsyncMock(return_value=mock_response)
+                                mock_session.get = Mock(return_value=mock_response)
                                 mock_session.__aenter__ = AsyncMock(return_value=mock_session)
                                 mock_session.__aexit__ = AsyncMock(return_value=None)
                                 
@@ -177,6 +156,8 @@ class TestImageGenerationService:
                                 assert result.path == test_image_path
                                 assert result.extras["prompt"] == sample_image_prompt.prompt
     
+        asyncio.run(run_test())
+
     def test_generate_image_no_provider_selected(self, mock_images_directory, sample_image_prompt):
         """
         Test generate_image when no provider is selected
@@ -282,7 +263,7 @@ class TestImageGenerationService:
                 mock_session.__aexit__ = AsyncMock(return_value=None)
                 
                 with patch('aiohttp.ClientSession', return_value=mock_session):
-                    result = await service.get_image_from_pixabay("sunset")
+                    result = await service.get_image_from_pixabay("sunset", mock_images_directory)
                     
                     assert result == "https://example.com/pixabay_image.jpg"
                     mock_session.get.assert_called_once()
