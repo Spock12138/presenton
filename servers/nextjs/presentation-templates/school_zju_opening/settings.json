@@ -1,0 +1,18 @@
+{
+    "name": "浙大-开题报告标准版",
+    "description": "浙江大学专用开题报告模板，采用求是蓝与金色配色，包含封面、目录、研究背景、问题分析、方法对比、数据指标、团队介绍等完整开题结构。",
+    "tags": ["ZJU", "开题报告", "学术", "求是蓝", "完整版"],
+    "ordered": true,
+    "default": false,
+    "layoutOrder": [
+        "IntroSlideLayout.tsx",
+        "TableOfContentsSlideLayout.tsx",
+        "BasicInfoSlideLayout.tsx",
+        "BulletWithIconsSlideLayout.tsx",
+        "NumberedBulletsSlideLayout.tsx",
+        "MetricsSlideLayout.tsx",
+        "TableInfoSlideLayout.tsx",
+        "QuoteSlideLayout.tsx",
+        "TeamSlideLayout.tsx"
+    ]
+}

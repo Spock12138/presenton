@@ -53,6 +53,28 @@ export async function GET() {
                 }
 
                 if (layoutFiles.length > 0) {
+                    // Sort files if ordered and layoutOrder is provided
+                    if (settings?.ordered && settings?.layoutOrder) {
+                        layoutFiles.sort((a, b) => {
+                            const indexA = settings!.layoutOrder!.indexOf(a);
+                            const indexB = settings!.layoutOrder!.indexOf(b);
+                            
+                            // If both are in the list, sort by index
+                            if (indexA !== -1 && indexB !== -1) {
+                                return indexA - indexB;
+                            }
+                            
+                            // If only a is in the list, it comes first
+                            if (indexA !== -1) return -1;
+                            
+                            // If only b is in the list, it comes first
+                            if (indexB !== -1) return 1;
+                            
+                            // If neither is in the list, sort alphabetically
+                            return a.localeCompare(b);
+                        });
+                    }
+
                     allLayouts.push({
                         templateName: templateName,
                         templateID: templateName,

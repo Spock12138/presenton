@@ -1,0 +1,106 @@
+1-1:
+qwen的APIkey  sk-7cf455cf8bf944238eb2f01acb3f3a5a
+PEXELS的APIkey RdGbObjx2x1NINDzBfMw1srEamLfEtIL7gMLeosckYkPyHZSklvpLLe9
+
+
+# 首次启动慢是因为下载镜像
+# 后续启动 (容器已存在) 只需 2-3 秒
+# 重启容器
+docker restart presenton
+# 停止容器
+docker stop presenton
+# 启动已有容器
+docker start presenton
+
+
+Docker 包含完整应用 (Presenton 的做法)
+Docker 包含应用代码+环境
+开箱即用，无需本地配置
+修改代码需要重新构建镜像
+
+
+自己接下来打算启动本地源码开发模式
+
+
+
+1-4：
+LLM=custom
+→ 使用自定义 LLM 提供商（而不是 OpenAI/Anthropic）
+
+CUSTOM_LLM_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+→ Qwen API 的兼容端点
+
+CUSTOM_LLM_API_KEY=sk-7cf455cf8bf944238eb2f01acb3f3a5a
+→ 你的 Qwen API 密钥（每次调用会消耗额度）
+
+CUSTOM_MODEL=qwen-plus
+→ 使用 qwen-plus 模型（平衡性能和成本）
+
+IMAGE_PROVIDER=pexels
+→ 图片来源使用 Pexels（免费高质量图库）
+
+PEXELS_API_KEY=RdGbObjx2x1NINDzBfMw1srEamLfEtIL7gMLeosckYkPyHZSklvpLLe9
+→ 你的 Pexels API 密钥（每月有请求限制）
+
+CAN_CHANGE_KEYS=false
+→ 用户无法在界面中修改 API Keys（安全考虑）
+
+
+
+1-5：
+使用启动脚本（推荐）
+# 终端 1: 启动后端
+cd d:\project\presenton\presenton
+.\start-backend.ps1
+
+# 终端 2: 启动前端
+cd d:\project\presenton\presenton
+.\start-frontend.ps1
+
+重启后端的操作
+# 在运行后端的终端按 Ctrl+C 停止
+# 然后重新启动：
+conda activate presenton_dev
+cd d:\project\presenton\presenton\servers\fastapi
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+
+conda activate presenton_dev; cd d:\project\presenton\presenton\servers\fastapi; uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+
+设置环境变量（强制 UTF-8）
+在终端中输入以下命令并回车：
+$env:PYTHONUTF8 = "1"
+
+
+一键启动前端的操作
+cd d:\project\presenton\presenton\servers\nextjs; npm run dev
+
+cd d:\project\presenton\presenton\servers\fastapi; conda activate presenton_dev; $env:PYTHONIOENCODING='utf-8'; uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+
+
+
+1-27:
+先拉取再合并
+git fetch origin main
+git merge origin/main
+
+
+
+1-28：
+http://localhost:3000/template-preview/custom-065422f0-d7ff-40e8-9ce3-86b6020b8f42
+找不到保存的模板
+
+
+
+2-3：
+https://github.com/Spock12138/presenton 上游仓库链接
+
+
+
+
+
+
+
+
+
+
+

@@ -207,12 +207,27 @@ async def prepare_presentation(
         )
         print("[DEBUG] LLM structure generation completed")
 
-    presentation_structure.slides = presentation_structure.slides[: len(outlines)]
+    # 确保 slides 列表长度与 outlines 数量匹配
+    # 如果模版定义的 slides 数量少于 outlines 数量，循环复用已有的布局
+    original_slides = presentation_structure.slides
+    original_len = len(original_slides)
+    
+    if original_len == 0:
+        # 如果模版没有定义任何 slides，使用随机布局
+        presentation_structure.slides = [random.randint(0, total_slide_layouts - 1) for _ in range(total_outlines)]
+    elif original_len < total_outlines:
+        # 模版 slides 数量不足，循环复用已有布局
+        extended_slides = []
+        for i in range(total_outlines):
+            extended_slides.append(original_slides[i % original_len])
+        presentation_structure.slides = extended_slides
+    else:
+        # 模版 slides 数量足够，截取到需要的长度
+        presentation_structure.slides = original_slides[:total_outlines]
+    
+    # 验证每个 slide 索引是否有效，无效则替换为随机值
     for index in range(total_outlines):
         random_slide_index = random.randint(0, total_slide_layouts - 1)
-        if index >= total_outlines:
-            presentation_structure.slides.append(random_slide_index)
-            continue
         if presentation_structure.slides[index] >= total_slide_layouts:
             presentation_structure.slides[index] = random_slide_index
 

@@ -1,0 +1,8 @@
+{
+  "llm_provider": "openai_compatible",
+  "openai_compatible": {
+    "url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-7cf455cf8bf944238eb2f01acb3f3a5a",
+    "model": "qwen-plus"
+  }
+}

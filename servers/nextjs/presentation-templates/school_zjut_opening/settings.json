@@ -1,7 +1,18 @@
 {
     "name": "浙工大-开题报告标准版",
-    "description": "浙江工业大学专用开题报告模板，包含校徽、校训及标准开题章节结构。",
-    "tags": ["ZJUT", "开题报告", "学术", "蓝色系"],
+    "description": "浙江工业大学专用开题报告模板，包含封面、目录、研究背景、问题分析、方法对比、数据指标、团队介绍等完整开题结构。",
+    "tags": ["ZJUT", "开题报告", "学术", "蓝色系", "完整版"],
     "ordered": true,
-    "default": false
+    "default": false,
+    "layoutOrder": [
+        "IntroSlideLayout.tsx",
+        "TableOfContentsSlideLayout.tsx",
+        "BasicInfoSlideLayout.tsx",
+        "BulletWithIconsSlideLayout.tsx",
+        "NumberedBulletsSlideLayout.tsx",
+        "MetricsSlideLayout.tsx",
+        "TableInfoSlideLayout.tsx",
+        "QuoteSlideLayout.tsx",
+        "TeamSlideLayout.tsx"
+    ]
 }
