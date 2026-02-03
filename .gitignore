@@ -37,3 +37,4 @@ servers/fastapi/chroma/
 *.onnx
 *.node
 build/
+app_data/template_requests/
