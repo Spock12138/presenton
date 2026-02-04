@@ -5,12 +5,21 @@ import { useLayout } from "../(presentation-generator)/context/LayoutContext";
 const page = () => {
   const searchParams = useSearchParams();
   const templateID = searchParams.get("group");
-  const { getLayoutsByTemplateID, getTemplateSetting, loading } = useLayout();
+  const { getLayoutsByTemplateID, getTemplateSetting, loading, error } = useLayout();
+
+  console.log("Schema Page Rendering, TemplateID:", templateID);
+
   if (!templateID) {
     return <div>未提供模板 ID</div>;
   }
+
   const layouts = getLayoutsByTemplateID(templateID);
   const settings = getTemplateSetting(templateID);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div>
       {loading ? (

@@ -37,6 +37,10 @@ export async function GET(request: Request) {
     await page.setViewport({ width: 1280, height: 720 });
     page.setDefaultNavigationTimeout(300000);
     page.setDefaultTimeout(300000);
+
+    page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+    page.on('pageerror', err => console.log('PAGE ERROR:', err.toString()));
+
     await page.goto(schemaPageUrl, {
       waitUntil: "networkidle0",
       timeout: 300000,

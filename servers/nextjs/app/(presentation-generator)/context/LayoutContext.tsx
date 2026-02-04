@@ -9,6 +9,7 @@ import React, {
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import * as z from "zod";
+import { zodToJsonSchema as zToJs } from "zod-to-json-schema";
 import { useDispatch } from "react-redux";
 import { setLayoutLoading } from "@/store/slices/presentationGeneration";
 
@@ -217,7 +218,8 @@ export const LayoutProvider: React.FC<{
               module.layoutDescription ||
               `${layoutName} layout for presentations`;
 
-            const jsonSchema = z.toJSONSchema(module.Schema);
+            console.log("Using zToJs:", zToJs);
+            const jsonSchema = zToJs(module.Schema);
 
             const layout: LayoutInfo = {
               id: uniqueKey,
@@ -249,10 +251,10 @@ export const LayoutProvider: React.FC<{
             });
             templateLayouts.push(layout);
             layouts.push(layout);
-          } catch (error) {
+          } catch (error: any) {
             console.error(
               `💥 Error extracting schema for ${fileName} from ${template.templateID}:`,
-              error
+              JSON.stringify(error, Object.getOwnPropertyNames(error))
             );
           }
         }
