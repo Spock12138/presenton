@@ -145,6 +145,7 @@ class LLMClient:
         return AsyncOpenAI(
             base_url=get_custom_llm_url_env(),
             api_key=get_custom_llm_api_key_env() or "null",
+            timeout=90.0,
         )
 
     # ? Prompts

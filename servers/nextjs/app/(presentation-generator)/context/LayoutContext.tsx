@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
+import "@/app/utils/zod-patch";
 import * as z from "zod";
 import { zodToJsonSchema as zToJs } from "zod-to-json-schema";
 import { useDispatch } from "react-redux";
@@ -474,11 +475,7 @@ export const LayoutProvider: React.FC<{
 
               // Build schema and sample data with guards
               try {
-                jsonSchema = z.toJSONSchema((module as any).Schema, {
-                  override: (ctx) => {
-                    delete ctx.jsonSchema.default;
-                  },
-                });
+                jsonSchema = zToJs((module as any).Schema, "schema");
               } catch (schemaErr: any) {
                 const errorComp = createErrorComponent(
                   `Schema generation failed for ${i.layout_name}`,

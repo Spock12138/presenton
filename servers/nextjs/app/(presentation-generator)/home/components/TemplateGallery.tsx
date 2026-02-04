@@ -134,9 +134,12 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({ selectedSchool
     if (category === 'recommended') {
       // 推荐：显示学校特定模板
       if (selectedSchool) {
-        templates = templates.filter(t => 
-          t.templateID.toLowerCase().includes(selectedSchool.id.toLowerCase())
-        );
+        templates = templates.filter(t => {
+          // Strict matching: split templateID by '_' and check if it contains the school ID as a distinct token
+          // This prevents "zju" from matching "school_zjut_opening"
+          const tokens = t.templateID.toLowerCase().split('_');
+          return tokens.includes(selectedSchool.id.toLowerCase());
+        });
       } else {
         // 没选择学校时，显示所有学校特定模板（包含 school_ 的）
         templates = templates.filter(t => t.templateID.toLowerCase().includes('school_'));

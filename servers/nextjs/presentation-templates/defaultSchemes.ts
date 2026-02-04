@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const ImageSchema = z.object({
-    __image_url__: z.url().meta({
+    __image_url__: z.string().url().meta({
         description: "URL to image",
     }),
     __image_prompt__: z.string().meta({

@@ -30,6 +30,7 @@ from api.v1.webhook.router import API_V1_WEBHOOK_ROUTER
 from api.v1.mock.router import API_V1_MOCK_ROUTER
 from utils.get_env import get_app_data_directory_env
 from api.v1.templates.router import API_V1_TEMPLATES_ROUTER
+from api.v1.schools.router import API_V1_SCHOOLS_ROUTER
 
 
 app = FastAPI(lifespan=app_lifespan)
@@ -50,6 +51,7 @@ app.include_router(API_V1_PPT_ROUTER)
 app.include_router(API_V1_WEBHOOK_ROUTER)
 app.include_router(API_V1_MOCK_ROUTER)
 app.include_router(API_V1_TEMPLATES_ROUTER)
+app.include_router(API_V1_SCHOOLS_ROUTER)
 
 # Middlewares
 origins = ["*"]
